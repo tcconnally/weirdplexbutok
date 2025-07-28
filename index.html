@@ -37,7 +37,7 @@
             border-bottom: 2px solid #373737;
             padding-bottom: 10px;
         }
-        p, li {
+        p {
             line-height: 1.6;
         }
         .links {
@@ -57,10 +57,19 @@
         .button:hover {
             background-color: #32fbec;
         }
-        .status-box {
+        /* New styles for the status indicator */
+        #status-indicator {
+            padding: 10px 15px;
             border-radius: 5px;
-            overflow: hidden;
+            font-weight: bold;
+            text-align: center;
+            background-color: #333; /* Default loading color */
+            transition: background-color 0.5s;
         }
+        .status-operational { background-color: #2E7D32; /* Green */ }
+        .status-maintenance { background-color: #1565C0; /* Blue */ }
+        .status-minor-outage { background-color: #FF8F00; /* Orange */ }
+        .status-major-outage { background-color: #C62828; /* Red */ }
     </style>
 </head>
 <body>
@@ -69,8 +78,7 @@
 
         <section class="section">
             <h2>System Status</h2>
-            <div class="status-box">
-                </div>
+            <div id="status-indicator">Loading status...</div>
             <p style="margin-top: 15px;">For detailed information, visit the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer" style="color: #03dac6;">full status page</a>.</p>
         </section>
 
@@ -88,6 +96,35 @@
         </section>
     </main>
 
-    <script src="https://weirdplexbutok.statuspage.io/embed/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusIndicator = document.getElementById('status-indicator');
+            const apiUrl = 'https://weirdplexbutok.statuspage.io/api/v2/summary.json';
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const status = data.status.indicator;
+                    const description = data.status.description;
+
+                    statusIndicator.textContent = description;
+
+                    if (status === 'none') {
+                        statusIndicator.className = 'status-operational';
+                    } else if (status === 'minor') {
+                        statusIndicator.className = 'status-minor-outage';
+                    } else if (status === 'major') {
+                        statusIndicator.className = 'status-major-outage';
+                    } else if (status === 'maintenance') {
+                        statusIndicator.className = 'status-maintenance';
+                    }
+                })
+                .catch(error => {
+                    statusIndicator.textContent = 'Could not load status';
+                    statusIndicator.className = 'status-major-outage';
+                    console.error('Error fetching status:', error);
+                });
+        });
+    </script>
 </body>
 </html>

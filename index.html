@@ -18,8 +18,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            0%, 100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); }
+            50% { opacity: 0.8; text-shadow: 0 0 5px #fff, 0 0 12px var(--neon-pink), 0 0 20px var(--neon-pink); }
         }
 
         /* --- BASE & BACKGROUND --- */
@@ -40,28 +40,38 @@
             text-transform: lowercase;
         }
 
+        /* --- INDEPENDENT HEADER --- */
+        header {
+            position: absolute;
+            top: 48%; /* Aligns with the pink neon line */
+            left: 5%;
+            width: 30%;
+            max-width: 400px;
+            animation: fadeIn 2s ease-out;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 0;
+            color: #fff;
+            animation: flicker 3s linear infinite;
+        }
+
         /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
         .hologram-container {
             position: absolute;
-            top: 60%;
+            top: 55%; /* Positioned below the independent header */
             left: 5%;
             width: 30%;
             max-width: 400px;
             color: var(--light-cyan);
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
-            transform: perspective(1200px) rotateX(10deg);
-            animation: fadeIn 2s ease-out;
+            animation: fadeIn 2s ease-out 0.2s; /* Slight delay */
+            animation-fill-mode: backwards;
         }
 
         /* --- TYPOGRAPHY & CONTENT --- */
-        h1 {
-            font-size: 2em;
-            margin: -8vh 0 20px 0; /* Raised with negative top margin */
-            color: #fff;
-            text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink);
-            animation: flicker 3s linear infinite;
-        }
-        
         h2 {
             font-size: 1.1em;
             margin: 0 0 10px 0;
@@ -84,7 +94,6 @@
             text-shadow: 0 0 10px var(--neon-pink);
         }
 
-        /* Glowing dividers */
         hr {
             border: 0;
             height: 1px;
@@ -111,17 +120,9 @@
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
             cursor: pointer;
         }
-        .button::before {
-            content: '[ ';
-            color: var(--neon-pink);
-        }
-        .button::after {
-            content: ' ]';
-            color: var(--neon-pink);
-        }
-        .button:hover {
-            color: #fff;
-        }
+        .button::before { content: '[ '; color: var(--neon-pink); }
+        .button::after { content: ' ]'; color: var(--neon-pink); }
+        .button:hover { color: #fff; }
 
         #status-indicator {
             padding: 8px;
@@ -135,36 +136,36 @@
         .status-major-outage { color: #ff3c3c; text-shadow: 0 0 8px #ff3c3c; }
 
 
-        /* --- RESPONSIVENESS: Reverts to a readable panel on mobile --- */
+        /* --- RESPONSIVENESS --- */
         @media (max-width: 800px) {
-            body {
-                overflow-y: auto;
-            }
-            .hologram-container {
+            body { overflow-y: auto; }
+            header, .hologram-container {
                 position: relative;
                 top: auto;
                 left: auto;
                 width: auto;
                 max-width: none;
+                transform: none;
+            }
+            header {
+                margin: 20px 20px 0 20px;
+            }
+            .hologram-container {
                 margin: 20px;
                 padding: 20px;
-                transform: none; /* Reset transform for mobile */
                 background: rgba(10, 25, 47, 0.9);
                 border: 1px solid var(--neon-pink);
-            }
-            h1 {
-                margin-top: 0; /* Reset negative margin on mobile */
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="hologram-container">
-        <header>
-            <h1>&gt; welcome...</h1>
-        </header>
+    <header>
+        <h1>&gt; welcome...</h1>
+    </header>
 
+    <div class="hologram-container">
         <section>
             <h2>system status_</h2>
             <div id="status-indicator">syncing with grid...</div>

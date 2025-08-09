@@ -7,26 +7,18 @@
     <style>
         :root {
             --neon-cyan: #00ffff;
-            --neon-pink: #ff00ff;
             --neon-yellow: #ffff00;
-            --dark-bg: rgba(10, 25, 47, 0.7);
+            --glow-color: rgba(0, 255, 255, 0.5);
+            --dark-bg: rgba(10, 25, 47, 0.75);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
+            --panel-glow: 0 0 8px var(--neon-cyan), 0 0 15px var(--glow-color), 0 0 25px var(--glow-color);
+            --text-glow: 0 0 6px rgba(0, 255, 255, 0.7);
         }
 
         /* --- KEYFRAME ANIMATIONS --- */
-        @keyframes slideIn {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(0); }
-        }
-
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes border-glow {
-            0%, 100% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, inset 2px 0 5px #00ffff; }
-            50% { box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff, inset 2px 0 8px #ff00ff; }
         }
 
         /* --- BASE & BACKGROUND --- */
@@ -43,7 +35,10 @@
             color: var(--neon-cyan);
             font-family: var(--font-stack);
             margin: 0;
-            overflow: hidden; /* Prevents scrollbars from the layout */
+            text-shadow: var(--text-glow);
+            overflow-x: hidden;
+            min-height: 100%;
+            text-transform: lowercase; /* Force all text to lowercase */
         }
 
         /* Scanline Overlay */
@@ -55,62 +50,44 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 4px;
-            z-index: 5;
+            background-size: 100% 3px;
+            z-index: -1;
             pointer-events: none;
         }
         
-        /* --- LAYOUT & SIDE PANEL --- */
-        .side-panel {
-            height: 100vh;
-            width: 450px;
-            max-width: 90%;
-            position: fixed;
-            left: 0;
-            top: 0;
+        /* --- LAYOUT & HOLOGRAPHIC PANEL --- */
+        .container {
+            position: absolute;
+            top: 48%; /* Position below the GREG sign */
+            left: 50%;
+            transform: translateX(-50%); /* Horizontally center the panel */
+            width: 90%;
+            max-width: 700px;
             background: var(--dark-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-right: 2px solid var(--neon-cyan);
-            animation: slideIn 1s ease-out forwards, border-glow 5s linear infinite alternate 1s;
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow-y: auto;
+            box-shadow: var(--panel-glow);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 25px;
+            animation: fadeIn 1.5s ease-out;
+            border-radius: 4px; /* Slightly rounded corners for a softer look */
         }
-        
-        .side-panel > * {
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        
-        /* Staggered animation delays */
-        .side-panel header { animation-delay: 1s; }
-        .side-panel .section:nth-of-type(1) { animation-delay: 1.2s; }
-        .side-panel .section:nth-of-type(2) { animation-delay: 1.4s; }
-        .side-panel .section:nth-of-type(3) { animation-delay: 1.6s; }
-
 
         /* --- TYPOGRAPHY & CONTENT --- */
         h1 {
-            font-size: 2em;
-            letter-spacing: .1em;
-            color: #fff;
-            text-shadow: 0 0 5px #fff, 0 0 10px var(--neon-cyan);
-            margin: 0 0 40px 0;
+            font-size: 1.8em;
+            margin: 0 0 30px 0;
+            text-align: center;
         }
         
         h2 {
             font-size: 1.1em;
             margin: 0 0 15px 0;
             color: var(--neon-yellow);
-            text-transform: uppercase;
         }
         
         p {
             line-height: 1.7;
-            font-size: 0.95em;
+            font-size: 1em;
             color: #ccc;
         }
 
@@ -125,13 +102,10 @@
         }
 
         .section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            margin-bottom: 25px;
         }
         .section:last-child {
-             border-bottom: none;
-             margin-bottom: 0;
+            margin-bottom: 0;
         }
 
         /* --- INTERACTIVE ELEMENTS --- */
@@ -142,27 +116,27 @@
         }
         
         .button {
-            background: transparent;
-            border: 1px solid var(--neon-yellow);
-            color: var(--neon-yellow);
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
             padding: 10px 15px;
             font-family: var(--font-stack);
             font-weight: bold;
             font-size: 0.9em;
-            text-shadow: 0 0 5px var(--neon-yellow);
+            text-shadow: none;
             transition: all 0.3s ease;
         }
         .button:hover {
-            background: rgba(255, 255, 0, 0.1);
+            background: rgba(0, 255, 255, 0.2);
             color: #fff;
-            box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+            box-shadow: 0 0 15px var(--glow-color);
         }
 
         #status-indicator {
             padding: 10px 15px;
             font-weight: bold;
             text-align: center;
-            background-color: #000;
+            background-color: rgba(0,0,0,0.5);
             border: 1px solid var(--neon-cyan);
             transition: all 0.5s;
         }
@@ -173,17 +147,13 @@
 
         /* --- RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body {
-                display: block; /* Revert to default block layout on mobile */
-            }
-            .side-panel {
-                position: relative;
+            .container {
+                position: relative; /* Revert to normal flow */
+                top: auto;
+                left: auto;
+                transform: none;
+                margin: 20px auto;
                 width: auto;
-                max-width: 100%;
-                height: auto;
-                margin: 20px;
-                border: 2px solid var(--neon-cyan);
-                animation: fadeIn 1s ease-out forwards; /* Simpler animation for mobile */
             }
         }
 
@@ -191,28 +161,28 @@
 </head>
 <body>
 
-    <main class="side-panel">
+    <main class="container">
         <header>
-            <h1>&gt; GREG_NEXUS</h1>
+            <h1>&gt; welcome...</h1>
         </header>
 
         <section class="section">
-            <h2>SYSTEM STATUS_</h2>
-            <div id="status-indicator">SYNCING WITH GRID...</div>
-            <p style="margin-top: 15px;">Detailed intel on the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
+            <h2>system status_</h2>
+            <div id="status-indicator">syncing with grid...</div>
+            <p style="margin-top: 15px;">detailed intel on the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
         </section>
 
         <section class="section">
-            <h2>ANNOUNCEMENTS_</h2>
-            <p><strong>&gt; AUG 08, 2025: UPLINK ESTABLISHED.</strong> This is the new home. Here you will find system status, media requests, and other useful links. Thanks for your patience during the upgrade cycle.</p>
+            <h2>announcements_</h2>
+            <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. here you will find my system status, media request/issue reportal, and other useful links. thanks for your patience during the upgrade cycle.</p>
         </section>
 
         <section class="section">
-            <h2>QUICK LINKS_</h2>
+            <h2>quick links_</h2>
             <div class="links">
-                <a href="https://requests.weirdplexbutok.biz" class="button">REQUEST MEDIA</a>
-                <a href="https://www.venmo.com/u/Thomas-Connally" class="button">VENMO</a>
-                <a href="https://paypal.me/thomasconnally1111" class="button">PAYPAL</a>
+                <a href="https://requests.weirdplexbutok.biz" class="button">request media</a>
+                <a href="https://www.venmo.com/u/Thomas-Connally" class="button">venmo</a>
+                <a href="https://paypal.me/thomasconnally1111" class="button">paypal</a>
             </div>
         </section>
     </main>
@@ -230,7 +200,7 @@
                 .then(data => {
                     const status = data.status.indicator;
                     const description = data.status.description;
-                    statusIndicator.textContent = description.toUpperCase();
+                    statusIndicator.textContent = description.toLowerCase(); // Set to lowercase
                     
                     statusIndicator.className = 'status-indicator';
                     if (status === 'none') { statusIndicator.classList.add('status-operational'); } 
@@ -239,7 +209,7 @@
                     else if (status === 'maintenance') { statusIndicator.classList.add('status-maintenance'); }
                 })
                 .catch(error => {
-                    statusIndicator.textContent = 'CONNECTION SEVERED';
+                    statusIndicator.textContent = 'connection severed';
                     statusIndicator.className = 'status-indicator status-major-outage';
                     console.error('Error fetching status:', error);
                 });

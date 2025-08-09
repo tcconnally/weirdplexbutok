@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>:~:greg:~:</title>
+    <title>~:greg:~</title>
     <style>
         :root {
             --neon-cyan: #00ffff;
             --neon-yellow: #ffff00;
-            --dark-bg: rgba(10, 25, 47, 0.75);
+            --glow-color: rgba(0, 255, 255, 0.75);
+            --dark-bg: rgba(10, 25, 47, 0.85);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
             --border-glow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 15px var(--glow-color);
             --text-glow: 0 0 8px var(--neon-cyan);
@@ -37,18 +38,22 @@
         }
 
         /* --- Base & Background --- */
+        html {
+            height: 100%;
+        }
+        
         body {
             background-color: #000000;
             background-image: url('greg.png');
-            background-size: auto;
+            background-size: cover;
             background-position: center center;
             background-attachment: fixed;
             color: var(--neon-cyan);
             font-family: var(--font-stack);
             margin: 0;
-            padding: 40px 20px;
             text-shadow: var(--text-glow);
             overflow-x: hidden;
+            min-height: 100%;
         }
 
         /* Scanline Overlay */
@@ -61,14 +66,14 @@
             height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             background-size: 100% 4px, 3px 100%;
-            z-index: 2;
+            z-index: -1;
             pointer-events: none;
         }
         
         /* --- Layout & Main Container --- */
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 40px auto; /* Adjusted margin to control spacing from top */
             background: var(--dark-bg);
             border: 1px solid var(--neon-cyan);
             box-shadow: var(--border-glow);
@@ -186,7 +191,7 @@
 
     <main class="container">
         <header>
-            <h1>&gt; welcome...</h1>
+            <h1>&gt; Welcome to the Nexus...</h1>
         </header>
 
         <section class="section">

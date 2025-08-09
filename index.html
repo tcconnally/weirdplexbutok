@@ -43,14 +43,13 @@
         /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
         .hologram-container {
             position: absolute;
-            top: 58%;
-            left: 28%;
-            width: 40%;
-            max-width: 550px;
+            top: 60%;
+            left: 5%;
+            width: 30%;
+            max-width: 400px;
             color: var(--light-cyan);
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
-            transform-origin: bottom left;
-            transform: perspective(1000px) rotateY(20deg) rotateX(2deg) skewY(-2deg);
+            transform: perspective(1200px) rotateX(10deg);
             animation: fadeIn 2s ease-out;
         }
 
@@ -146,6 +145,7 @@
                 top: auto;
                 left: auto;
                 width: auto;
+                max-width: none;
                 margin: 20px;
                 padding: 20px;
                 transform: none; /* Reset transform for mobile */

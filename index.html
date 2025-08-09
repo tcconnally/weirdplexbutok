@@ -56,7 +56,7 @@
         /* --- TYPOGRAPHY & CONTENT --- */
         h1 {
             font-size: 2em;
-            margin: 0 0 20px 0;
+            margin: -8vh 0 20px 0; /* Raised with negative top margin */
             color: #fff;
             text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink);
             animation: flicker 3s linear infinite;
@@ -151,6 +151,9 @@
                 transform: none; /* Reset transform for mobile */
                 background: rgba(10, 25, 47, 0.9);
                 border: 1px solid var(--neon-pink);
+            }
+            h1 {
+                margin-top: 0; /* Reset negative margin on mobile */
             }
         }
     </style>

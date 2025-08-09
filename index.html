@@ -3,221 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~greg's place~</title>
+    <title>:~:greg:~:</title>
     <style>
-        @keyframes blink {
-            50% { color: #f0f; }
-            100% { color: #0ff; }
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-yellow: #ffff00;
+            --dark-bg: rgba(10, 25, 47, 0.75);
+            --font-stack: 'Lucida Console', 'Courier New', monospace;
+            --border-glow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 15px var(--glow-color);
+            --text-glow: 0 0 8px var(--neon-cyan);
         }
 
+        /* --- Keyframe Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--neon-cyan); }
+        }
+        
+        @keyframes text-glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: skew(2deg) translate(1px, 0); }
+        }
+
+        /* --- Base & Background --- */
         body {
             background-color: #000000;
-            background-image: linear-gradient(#00ff00 1px, transparent 1px), linear-gradient(to right, #00ff00 1px, #000000 1px);
-            background-size: 20px 20px;
-            color: #000000;
-            font-family: "MS Sans Serif", "Geneva", "sans-serif";
-            font-smooth: never;
-            -webkit-font-smoothing: none;
+            background-image: url('greg.png');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: var(--neon-cyan);
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 40px 20px;
+            text-shadow: var(--text-glow);
+            overflow-x: hidden;
         }
 
-        a { color: #0000ff; }
-        a:visited { color: #800080; }
-
-        .window {
-            background-color: #c0c0c0;
-            border: 2px solid;
-            border-top-color: #ffffff;
-            border-left-color: #ffffff;
-            border-right-color: #000000;
-            border-bottom-color: #000000;
-            box-shadow: 5px 5px 10px #000;
-            max-width: 800px;
-            width: 90%;
-            margin: 40px auto;
-        }
-
-        .title-bar {
-            background: linear-gradient(to right, #000080, #1084d0);
-            color: #ffffff;
-            font-weight: bold;
-            padding: 4px 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Scanline Overlay */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 2;
+            pointer-events: none;
         }
         
-        .title-bar-buttons span {
-            background-color: #c0c0c0;
-            border: 1px solid;
-            border-top-color: #fff;
-            border-left-color: #fff;
-            border-right-color: #000;
-            border-bottom-color: #000;
-            padding: 0px 4px 2px 4px;
-            font-family: "monospace";
-            font-size: 14px;
-            margin-left: 2px;
+        /* --- Layout & Main Container --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--dark-bg);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: var(--border-glow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 25px;
+            animation: fadeIn 1.5s ease-out;
         }
 
-        .content-area {
-            padding: 20px;
-        }
-
+        /* --- Typography --- */
         h1 {
-            font-size: 3em;
-            text-align: center;
-            color: #0ff;
-            text-shadow: 
-                3px 3px 0px #f0f,
-                -3px -3px 0px #0f0;
-            letter-spacing: 5px;
-            margin-bottom: 20px;
-            font-family: "Impact", "monospace";
+            font-size: 2em;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: .1em solid var(--neon-cyan);
+            margin: 0 auto 30px auto;
+            letter-spacing: .1em;
+            animation: 
+                typing 2s steps(30, end),
+                blink-caret .75s step-end infinite;
+        }
+        
+        h2 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--neon-yellow);
+            animation: text-glitch 4s linear infinite;
+        }
+        
+        p {
+            line-height: 1.8;
+            font-size: 1em;
         }
 
-        .group-box {
-            border: 2px groove #fff;
-            border-top: 2px groove #808080;
-            border-left: 2px groove #808080;
+        a {
+            color: var(--neon-yellow);
+            text-decoration: none;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        /* --- Section Styling --- */
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
             padding: 20px;
-            margin-bottom: 20px;
             position: relative;
         }
-
-        .group-box h2 {
+        
+        /* Decorative Corner Brackets */
+        .section::before, .section::after {
+            content: '';
             position: absolute;
-            top: -12px;
-            left: 10px;
-            background-color: #c0c0c0;
-            padding: 0 5px;
-            font-size: 1em;
-            font-weight: normal;
+            width: 15px;
+            height: 15px;
+            border-color: var(--neon-cyan);
+            border-style: solid;
+        }
+        .section::before {
+            top: -5px;
+            left: -5px;
+            border-width: 2px 0 0 2px;
+        }
+        .section::after {
+            bottom: -5px;
+            right: -5px;
+            border-width: 0 2px 2px 0;
         }
 
-        p {
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
+        /* --- Interactive Elements --- */
         .links {
-            text-align: center;
-        }
-
-        .button {
-            background-color: #c0c0c0;
-            color: #000000;
-            padding: 8px 15px;
-            text-decoration: none;
-            border: 2px solid;
-            border-top-color: #ffffff;
-            border-left-color: #ffffff;
-            border-right-color: #000000;
-            border-bottom-color: #000000;
-            box-shadow: 1px 1px 0px #000;
-            display: inline-block;
-            margin: 5px;
-        }
-
-        .button:hover, .button:focus {
-            background-color: #b0b0b0;
-        }
-
-        .button:active {
-            border-top-color: #000000;
-            border-left-color: #000000;
-            border-right-color: #ffffff;
-            border-bottom-color: #ffffff;
-            box-shadow: none;
-        }
-
-        hr {
-            border: 0;
-            height: 2px;
-            background-color: #808080;
-            border-bottom: 2px solid #ffffff;
-            margin: 25px 0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
-        .blinking-text {
-            animation: blink 1s linear infinite;
+        .button {
+            background: transparent;
+            border: 1px solid var(--neon-yellow);
+            color: var(--neon-yellow);
+            padding: 12px 20px;
+            font-family: var(--font-stack);
+            font-weight: bold;
+            font-size: 1em;
+            text-shadow: 0 0 8px var(--neon-yellow);
+            box-shadow: inset 0 0 8px rgba(255, 255, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: rgba(255, 255, 0, 0.1);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.8), inset 0 0 10px rgba(255, 255, 0, 0.6);
         }
 
         #status-indicator {
-            padding: 5px;
-            text-align: center;
+            padding: 10px 15px;
             font-weight: bold;
-            font-family: "Courier New", monospace;
-            border: 2px inset #808080;
-            background-color: #fff;
-            color: #000;
-        }
-        .status-operational { background-color: #00ff00; }
-        .status-maintenance { background-color: #00ffff; }
-        .status-minor-outage { background-color: #ffff00; }
-        .status-major-outage { background-color: #ff0000; }
-        
-        .hit-counter {
-            font-family: "Courier New", monospace;
-            background: #000;
-            color: #0f0;
-            padding: 5px 10px;
-            border: 2px inset #fff;
             text-align: center;
-            margin-top: 20px;
+            background-color: #000;
+            border: 1px solid var(--neon-cyan);
+            transition: background-color 0.5s, box-shadow 0.5s;
         }
-        
-        .footer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
+        .status-operational { background-color: rgba(0, 255, 0, 0.2); box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.5); }
+        .status-maintenance { background-color: rgba(0, 255, 255, 0.2); box-shadow: inset 0 0 10px var(--glow-color); }
+        .status-minor-outage { background-color: rgba(255, 255, 0, 0.2); box-shadow: inset 0 0 10px rgba(255, 255, 0, 0.5); }
+        .status-major-outage { background-color: rgba(255, 0, 0, 0.2); box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.5); }
+
     </style>
 </head>
 <body>
-    <main class="window">
-        <div class="title-bar">
-            <span>GREG_SYS v3.11</span>
-            <div class="title-bar-buttons"><span>_</span><span>&#9723;</span><span>X</span></div>
-        </div>
-        
-        <div class="content-area">
-            <h1>Welcome to greg's place!</h1>
 
-            <div class="group-box">
-                <h2>SYSTEM STATUS_</h2>
-                <div id="status-indicator">Loading status...</div>
-                <p style="margin-top: 15px;">For detailed intel, jack in to the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
-            </div>
+    <main class="container">
+        <header>
+            <h1>&gt; welcome...</h1>
+        </header>
 
-            <div class="group-box">
-                <h2>ANNOUNCEMENTS_</h2>
-                <p><strong>&gt; August 8, 2025: WELCOME HOME_</strong></p>
-                <p>The old node address now redirects here. This is your new nexus for checking system <strong>Status</strong>, submitting new media <strong>Requests</strong>, and reading important <strong>Announcements</strong>. Your patience has been logged and appreciated. <span class="blinking-text">UPGRADES COMPLETE!</span></p>
-                <p><strong>&gt; July 28, 2025:</strong> All subsystems are now monitored. The new nexus is LIVE.</p>
-            </div>
+        <section class="section">
+            <h2>SYSTEM STATUS_</h2>
+            <div id="status-indicator">SYNCING WITH GRID...</div>
+            <p style="margin-top: 15px;">Detailed intel on the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
+        </section>
 
-            <div class="group-box">
-                <h2>QUICK_LINKS_</h2>
-                <div class="links">
-                    <a href="https://requests.weirdplexbutok.biz" class="button">REQUEST MEDIA</a>
-                    <a href="https://www.venmo.com/u/Thomas-Connally" class="button">VENMO</a>
-                    <a href="https://paypal.me/thomasconnally1111" class="button">PAYPAL</a>
-                </div>
+        <section class="section">
+            <h2>ANNOUNCEMENTS_</h2>
+            <p><strong>&gt; AUG 08, 2025: UPLINK ESTABLISHED.</strong> The old node now redirects here. This is your new hub for system status, media requests, and intel drops. Thanks for your patience during the upgrade cycle.</p>
+        </section>
+
+        <section class="section">
+            <h2>QUICK LINKS_</h2>
+            <div class="links">
+                <a href="https://requests.weirdplexbutok.biz" class="button">REQUEST MEDIA</a>
+                <a href="https://www.venmo.com/u/Thomas-Connally" class="button">VENMO</a>
+                <a href="https://paypal.me/thomasconnally1111" class="button">PAYPAL</a>
             </div>
-            
-            <hr>
-            
-            <div class="footer">
-                <img src="data:image/gif;base64,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" alt="spinning @ symbol">
-                <div class="hit-counter">
-                    <p style="margin: 0; padding: 0; font-size: 12px; color: #aaa;">YOU ARE VISITOR #</p>
-                    <p style="margin: 0; padding: 0; font-size: 20px;">008082025</p>
-                </div>
-                <img src="data:image/gif;base64,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" alt="spinning @ symbol">
-            </div>
-        </div>
+        </section>
     </main>
 
     <script>
@@ -227,9 +217,7 @@
 
             fetch(apiUrl)
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
+                    if (!response.ok) { throw new Error('Network response was not ok'); }
                     return response.json();
                 })
                 .then(data => {
@@ -237,20 +225,15 @@
                     const description = data.status.description;
                     statusIndicator.textContent = description.toUpperCase();
                     
-                    statusIndicator.className = ''; // Clear existing classes
-                    if (status === 'none') {
-                        statusIndicator.classList.add('status-operational');
-                    } else if (status === 'minor') {
-                        statusIndicator.classList.add('status-minor-outage');
-                    } else if (status === 'major') {
-                        statusIndicator.classList.add('status-major-outage');
-                    } else if (status === 'maintenance') {
-                        statusIndicator.classList.add('status-maintenance');
-                    }
+                    statusIndicator.className = 'status-indicator'; // Reset classes
+                    if (status === 'none') { statusIndicator.classList.add('status-operational'); } 
+                    else if (status === 'minor') { statusIndicator.classList.add('status-minor-outage'); } 
+                    else if (status === 'major') { statusIndicator.classList.add('status-major-outage'); } 
+                    else if (status === 'maintenance') { statusIndicator.classList.add('status-maintenance'); }
                 })
                 .catch(error => {
-                    statusIndicator.textContent = 'COULD NOT LOAD STATUS_';
-                    statusIndicator.className = 'status-major-outage';
+                    statusIndicator.textContent = 'CONNECTION SEVERED';
+                    statusIndicator.className = 'status-indicator status-major-outage';
                     console.error('Error fetching status:', error);
                 });
         });

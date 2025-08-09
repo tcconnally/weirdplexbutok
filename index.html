@@ -6,19 +6,20 @@
     <title>~:greg:~</title>
     <style>
         :root {
-            --neon-cyan: #00ffff;
-            --neon-yellow: #ffff00;
-            --glow-color: rgba(0, 255, 255, 0.5);
-            --dark-bg: rgba(10, 25, 47, 0.75);
+            --neon-pink: #ff00ff;
+            --light-cyan: #a1ffff;
+            --glow-color: rgba(255, 0, 255, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
-            --panel-glow: 0 0 8px var(--neon-cyan), 0 0 15px var(--glow-color), 0 0 25px var(--glow-color);
-            --text-glow: 0 0 6px rgba(0, 255, 255, 0.7);
         }
 
         /* --- KEYFRAME ANIMATIONS --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
         /* --- BASE & BACKGROUND --- */
@@ -32,150 +33,151 @@
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            color: var(--neon-cyan);
             font-family: var(--font-stack);
             margin: 0;
-            text-shadow: var(--text-glow);
-            overflow-x: hidden;
+            overflow: hidden;
             min-height: 100%;
             text-transform: lowercase;
         }
 
-        /* Scanline Overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 3px;
-            z-index: -1;
-            pointer-events: none;
-        }
-        
-        /* --- LAYOUT & HOLOGRAPHIC PANEL --- */
-        .container {
+        /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
+        .hologram-container {
             position: absolute;
-            top: 46%;      /* Position from top */
-            right: 18%;     /* Position from right to align with the sign */
-            width: 64%;     /* Widen the panel */
-            max-width: 900px; /* Set a max width */
-            background: var(--dark-bg);
-            box-shadow: var(--panel-glow);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            padding: 25px;
-            animation: fadeIn 1.5s ease-out;
-            border-radius: 4px;
+            top: 58%;
+            left: 28%;
+            width: 40%;
+            max-width: 550px;
+            color: var(--light-cyan);
+            text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
+            transform-origin: bottom left;
+            transform: perspective(1000px) rotateY(20deg) rotateX(2deg) skewY(-2deg);
+            animation: fadeIn 2s ease-out;
         }
 
         /* --- TYPOGRAPHY & CONTENT --- */
         h1 {
-            font-size: 1.8em;
-            margin: 0 0 30px 0;
-            text-align: center;
+            font-size: 2em;
+            margin: 0 0 20px 0;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink);
+            animation: flicker 3s linear infinite;
         }
         
         h2 {
             font-size: 1.1em;
-            margin: 0 0 15px 0;
-            color: var(--neon-yellow);
+            margin: 0 0 10px 0;
+            color: var(--neon-pink);
+            font-weight: bold;
         }
         
-        p {
-            line-height: 1.7;
-            font-size: 1em;
-            color: #ccc;
+        p, .button {
+            font-size: 0.9em;
+            line-height: 1.6;
         }
 
         a {
-            color: var(--neon-yellow);
+            color: var(--neon-pink);
             text-decoration: none;
             transition: color 0.3s, text-shadow 0.3s;
         }
         a:hover {
             color: #fff;
-            text-shadow: 0 0 10px var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-pink);
         }
 
-        .section {
-            margin-bottom: 25px;
-        }
-        .section:last-child {
-            margin-bottom: 0;
+        /* Glowing dividers */
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--glow-color);
+            margin: 20px 0;
         }
 
         /* --- INTERACTIVE ELEMENTS --- */
         .links {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
+            align-items: center;
         }
         
         .button {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 10px 15px;
+            background: none;
+            border: none;
+            color: var(--light-cyan);
+            padding: 5px;
             font-family: var(--font-stack);
             font-weight: bold;
-            font-size: 0.9em;
-            text-shadow: none;
-            transition: all 0.3s ease;
+            text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
+            cursor: pointer;
+        }
+        .button::before {
+            content: '[ ';
+            color: var(--neon-pink);
+        }
+        .button::after {
+            content: ' ]';
+            color: var(--neon-pink);
         }
         .button:hover {
-            background: rgba(0, 255, 255, 0.2);
             color: #fff;
-            box-shadow: 0 0 15px var(--glow-color);
         }
 
         #status-indicator {
-            padding: 10px 15px;
-            font-weight: bold;
-            text-align: center;
-            background-color: rgba(0,0,0,0.5);
-            border: 1px solid var(--neon-cyan);
+            padding: 8px;
+            text-align: left;
             transition: all 0.5s;
+            font-weight: bold;
         }
-        .status-operational { color: #50ff50; border-color: #50ff50; box-shadow: inset 0 0 10px rgba(80, 255, 80, 0.4); }
-        .status-maintenance { color: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.4); }
-        .status-minor-outage { color: var(--neon-yellow); border-color: var(--neon-yellow); box-shadow: inset 0 0 10px rgba(255, 255, 0, 0.4); }
-        .status-major-outage { color: #ff3c3c; border-color: #ff3c3c; box-shadow: inset 0 0 10px rgba(255, 60, 60, 0.4); }
+        .status-operational { color: #50ff50; text-shadow: 0 0 8px #50ff50;}
+        .status-maintenance { color: var(--light-cyan); text-shadow: 0 0 8px var(--light-cyan); }
+        .status-minor-outage { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
+        .status-major-outage { color: #ff3c3c; text-shadow: 0 0 8px #ff3c3c; }
 
-        /* --- RESPONSIVENESS --- */
-        @media (max-width: 900px) { /* Adjust breakpoint for wider panel */
-            .container {
+
+        /* --- RESPONSIVENESS: Reverts to a readable panel on mobile --- */
+        @media (max-width: 800px) {
+            body {
+                overflow-y: auto;
+            }
+            .hologram-container {
                 position: relative;
                 top: auto;
-                right: auto;
+                left: auto;
                 width: auto;
                 margin: 20px;
+                padding: 20px;
+                transform: none; /* Reset transform for mobile */
+                background: rgba(10, 25, 47, 0.9);
+                border: 1px solid var(--neon-pink);
             }
         }
-
     </style>
 </head>
 <body>
 
-    <main class="container">
+    <div class="hologram-container">
         <header>
             <h1>&gt; welcome...</h1>
         </header>
 
-        <section class="section">
+        <section>
             <h2>system status_</h2>
             <div id="status-indicator">syncing with grid...</div>
-            <p style="margin-top: 15px;">detailed intel on the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
+            <p>detailed intel on the <a href="https://weirdplexbutok.statuspage.io/" target="_blank" rel="noopener noreferrer">full status page</a>.</p>
         </section>
 
-        <section class="section">
+        <hr>
+
+        <section>
             <h2>announcements_</h2>
             <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. here you will find my system status, media request/issue reportal, and other useful links. thanks for your patience during the upgrade cycle.</p>
         </section>
+        
+        <hr>
 
-        <section class="section">
+        <section>
             <h2>quick links_</h2>
             <div class="links">
                 <a href="https://requests.weirdplexbutok.biz" class="button">request media</a>
@@ -183,7 +185,7 @@
                 <a href="https://paypal.me/thomasconnally1111" class="button">paypal</a>
             </div>
         </section>
-    </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

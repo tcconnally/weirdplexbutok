@@ -38,7 +38,7 @@
             text-shadow: var(--text-glow);
             overflow-x: hidden;
             min-height: 100%;
-            text-transform: lowercase; /* Force all text to lowercase */
+            text-transform: lowercase;
         }
 
         /* Scanline Overlay */
@@ -58,18 +58,17 @@
         /* --- LAYOUT & HOLOGRAPHIC PANEL --- */
         .container {
             position: absolute;
-            top: 48%; /* Position below the GREG sign */
-            left: 50%;
-            transform: translateX(-50%); /* Horizontally center the panel */
-            width: 90%;
-            max-width: 700px;
+            top: 46%;      /* Position from top */
+            right: 18%;     /* Position from right to align with the sign */
+            width: 64%;     /* Widen the panel */
+            max-width: 900px; /* Set a max width */
             background: var(--dark-bg);
             box-shadow: var(--panel-glow);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             padding: 25px;
             animation: fadeIn 1.5s ease-out;
-            border-radius: 4px; /* Slightly rounded corners for a softer look */
+            border-radius: 4px;
         }
 
         /* --- TYPOGRAPHY & CONTENT --- */
@@ -146,14 +145,13 @@
         .status-major-outage { color: #ff3c3c; border-color: #ff3c3c; box-shadow: inset 0 0 10px rgba(255, 60, 60, 0.4); }
 
         /* --- RESPONSIVENESS --- */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) { /* Adjust breakpoint for wider panel */
             .container {
-                position: relative; /* Revert to normal flow */
+                position: relative;
                 top: auto;
-                left: auto;
-                transform: none;
-                margin: 20px auto;
+                right: auto;
                 width: auto;
+                margin: 20px;
             }
         }
 
@@ -200,7 +198,7 @@
                 .then(data => {
                     const status = data.status.indicator;
                     const description = data.status.description;
-                    statusIndicator.textContent = description.toLowerCase(); // Set to lowercase
+                    statusIndicator.textContent = description.toLowerCase();
                     
                     statusIndicator.className = 'status-indicator';
                     if (status === 'none') { statusIndicator.classList.add('status-operational'); } 

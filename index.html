@@ -8,7 +8,7 @@
         :root {
             --neon-pink: #ff00ff;
             --light-cyan: #a1ffff;
-            --neon-yellow: #ffff00; /* Added this missing variable */
+            --neon-yellow: #ffff00;
             --glow-color: rgba(255, 0, 255, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
         }
@@ -186,8 +186,9 @@
             <h2>quick links_</h2>
             <div class="links">
                 <a href="https://requests.weirdplexbutok.biz" class="button">request media</a>
-                <a href="https://www.venmo.com/u/Thomas-Connally" class="button">venmo</a>
-                <a href="https://paypal.me/thomasconnally1111" class="button">paypal</a>
+                <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup guide</a>
+                <a href="https://www.venmo.com/u/Thomas-Connally" class="button" target="_blank" rel="noopener noreferrer">venmo</a>
+                <a href="https://paypal.me/thomasconnally1111" class="button" target="_blank" rel="noopener noreferrer">paypal</a>
             </div>
         </section>
     </main>
@@ -207,7 +208,6 @@
                     const description = data.status.description;
                     statusIndicator.textContent = description.toLowerCase();
                     
-                    // Simplified class assignment
                     if (status === 'none') { statusIndicator.className = 'status-operational'; } 
                     else if (status === 'minor') { statusIndicator.className = 'status-minor-outage'; } 
                     else if (status === 'major') { statusIndicator.className = 'status-major-outage'; } 

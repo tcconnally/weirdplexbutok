@@ -7,37 +7,29 @@
     <style>
         :root {
             --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
             --neon-yellow: #ffff00;
-            --glow-color: rgba(0, 255, 255, 0.75);
-            --dark-bg: rgba(10, 25, 47, 0.85);
+            --dark-bg: rgba(10, 25, 47, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
-            --border-glow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 15px var(--glow-color);
-            --text-glow: 0 0 8px var(--neon-cyan);
         }
 
-        /* --- Keyframe Animations --- */
+        /* --- KEYFRAME ANIMATIONS --- */
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
+        @keyframes border-glow {
+            0%, 100% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, inset 2px 0 5px #00ffff; }
+            50% { box-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff, inset 2px 0 8px #ff00ff; }
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: var(--neon-cyan); }
-        }
-        
-        @keyframes text-glitch {
-            2%, 64% { transform: translate(2px, 0) skew(0deg); }
-            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
-            62% { transform: skew(2deg) translate(1px, 0); }
-        }
-
-        /* --- Base & Background --- */
+        /* --- BASE & BACKGROUND --- */
         html {
             height: 100%;
         }
@@ -51,9 +43,7 @@
             color: var(--neon-cyan);
             font-family: var(--font-stack);
             margin: 0;
-            text-shadow: var(--text-glow);
-            overflow-x: hidden;
-            min-height: 100%;
+            overflow: hidden; /* Prevents scrollbars from the layout */
         }
 
         /* Scanline Overlay */
@@ -64,49 +54,64 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            z-index: -1;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+            z-index: 5;
             pointer-events: none;
         }
         
-        /* --- Layout & Main Container --- */
-        .container {
-            max-width: 800px;
-            margin: 40px auto; /* Adjusted margin to control spacing from top */
+        /* --- LAYOUT & SIDE PANEL --- */
+        .side-panel {
+            height: 100vh;
+            width: 450px;
+            max-width: 90%;
+            position: fixed;
+            left: 0;
+            top: 0;
             background: var(--dark-bg);
-            border: 1px solid var(--neon-cyan);
-            box-shadow: var(--border-glow);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 25px;
-            animation: fadeIn 1.5s ease-out;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 2px solid var(--neon-cyan);
+            animation: slideIn 1s ease-out forwards, border-glow 5s linear infinite alternate 1s;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
+        
+        .side-panel > * {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        /* Staggered animation delays */
+        .side-panel header { animation-delay: 1s; }
+        .side-panel .section:nth-of-type(1) { animation-delay: 1.2s; }
+        .side-panel .section:nth-of-type(2) { animation-delay: 1.4s; }
+        .side-panel .section:nth-of-type(3) { animation-delay: 1.6s; }
 
-        /* --- Typography --- */
+
+        /* --- TYPOGRAPHY & CONTENT --- */
         h1 {
             font-size: 2em;
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: .1em solid var(--neon-cyan);
-            margin: 0 auto 30px auto;
             letter-spacing: .1em;
-            animation: 
-                typing 2s steps(30, end),
-                blink-caret .75s step-end infinite;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--neon-cyan);
+            margin: 0 0 40px 0;
         }
         
         h2 {
-            font-size: 1.2em;
-            margin-top: 0;
-            margin-bottom: 15px;
+            font-size: 1.1em;
+            margin: 0 0 15px 0;
             color: var(--neon-yellow);
-            animation: text-glitch 4s linear infinite;
+            text-transform: uppercase;
         }
         
         p {
-            line-height: 1.8;
-            font-size: 1em;
+            line-height: 1.7;
+            font-size: 0.95em;
+            color: #ccc;
         }
 
         a {
@@ -119,35 +124,17 @@
             text-shadow: 0 0 10px var(--neon-yellow);
         }
 
-        /* --- Section Styling --- */
         .section {
             margin-bottom: 30px;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            padding: 20px;
-            position: relative;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
         }
-        
-        /* Decorative Corner Brackets */
-        .section::before, .section::after {
-            content: '';
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            border-color: var(--neon-cyan);
-            border-style: solid;
-        }
-        .section::before {
-            top: -5px;
-            left: -5px;
-            border-width: 2px 0 0 2px;
-        }
-        .section::after {
-            bottom: -5px;
-            right: -5px;
-            border-width: 0 2px 2px 0;
+        .section:last-child {
+             border-bottom: none;
+             margin-bottom: 0;
         }
 
-        /* --- Interactive Elements --- */
+        /* --- INTERACTIVE ELEMENTS --- */
         .links {
             display: flex;
             gap: 15px;
@@ -158,18 +145,17 @@
             background: transparent;
             border: 1px solid var(--neon-yellow);
             color: var(--neon-yellow);
-            padding: 12px 20px;
+            padding: 10px 15px;
             font-family: var(--font-stack);
             font-weight: bold;
-            font-size: 1em;
-            text-shadow: 0 0 8px var(--neon-yellow);
-            box-shadow: inset 0 0 8px rgba(255, 255, 0, 0.4);
+            font-size: 0.9em;
+            text-shadow: 0 0 5px var(--neon-yellow);
             transition: all 0.3s ease;
         }
         .button:hover {
             background: rgba(255, 255, 0, 0.1);
             color: #fff;
-            box-shadow: 0 0 15px rgba(255, 255, 0, 0.8), inset 0 0 10px rgba(255, 255, 0, 0.6);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
         }
 
         #status-indicator {
@@ -178,20 +164,36 @@
             text-align: center;
             background-color: #000;
             border: 1px solid var(--neon-cyan);
-            transition: background-color 0.5s, box-shadow 0.5s;
+            transition: all 0.5s;
         }
-        .status-operational { background-color: rgba(0, 255, 0, 0.2); box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.5); }
-        .status-maintenance { background-color: rgba(0, 255, 255, 0.2); box-shadow: inset 0 0 10px var(--glow-color); }
-        .status-minor-outage { background-color: rgba(255, 255, 0, 0.2); box-shadow: inset 0 0 10px rgba(255, 255, 0, 0.5); }
-        .status-major-outage { background-color: rgba(255, 0, 0, 0.2); box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.5); }
+        .status-operational { color: #50ff50; border-color: #50ff50; box-shadow: inset 0 0 10px rgba(80, 255, 80, 0.4); }
+        .status-maintenance { color: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.4); }
+        .status-minor-outage { color: var(--neon-yellow); border-color: var(--neon-yellow); box-shadow: inset 0 0 10px rgba(255, 255, 0, 0.4); }
+        .status-major-outage { color: #ff3c3c; border-color: #ff3c3c; box-shadow: inset 0 0 10px rgba(255, 60, 60, 0.4); }
+
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                display: block; /* Revert to default block layout on mobile */
+            }
+            .side-panel {
+                position: relative;
+                width: auto;
+                max-width: 100%;
+                height: auto;
+                margin: 20px;
+                border: 2px solid var(--neon-cyan);
+                animation: fadeIn 1s ease-out forwards; /* Simpler animation for mobile */
+            }
+        }
 
     </style>
 </head>
 <body>
 
-    <main class="container">
+    <main class="side-panel">
         <header>
-            <h1>&gt; welcome...</h1>
+            <h1>&gt; GREG_NEXUS</h1>
         </header>
 
         <section class="section">
@@ -202,7 +204,7 @@
 
         <section class="section">
             <h2>ANNOUNCEMENTS_</h2>
-            <p><strong>&gt; AUG 08, 2025: hello friends...</strong> This is my new home. Here you will find my system status, media request/issue reportal, and other useful links. Thanks for your patience during the upgrade cycle.</p>
+            <p><strong>&gt; AUG 08, 2025: UPLINK ESTABLISHED.</strong> This is the new home. Here you will find system status, media requests, and other useful links. Thanks for your patience during the upgrade cycle.</p>
         </section>
 
         <section class="section">
@@ -230,7 +232,7 @@
                     const description = data.status.description;
                     statusIndicator.textContent = description.toUpperCase();
                     
-                    statusIndicator.className = 'status-indicator'; // Reset classes
+                    statusIndicator.className = 'status-indicator';
                     if (status === 'none') { statusIndicator.classList.add('status-operational'); } 
                     else if (status === 'minor') { statusIndicator.classList.add('status-minor-outage'); } 
                     else if (status === 'major') { statusIndicator.classList.add('status-major-outage'); } 

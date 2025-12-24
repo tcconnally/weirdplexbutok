@@ -11,6 +11,7 @@
             --neon-yellow: #ffff00;
             --glow-color: rgba(255, 0, 255, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
+            --bg-overlay: rgba(10, 15, 20, 0.85); /* Dark background for readability */
         }
 
         /* --- KEYFRAME ANIMATIONS --- */
@@ -25,35 +26,44 @@
 
         /* --- BASE & BACKGROUND --- */
         html {
-            height: 100%;
+            min-height: 100%;
         }
         
         body {
             background-color: #000000;
-            background-image: url('greg.jpg');
+            /* Updated Image Name */
+            background-image: url('nano_banana.jpg'); 
             background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
+            background-position: center center; /* Ensures art is centered */
+            background-attachment: fixed; /* Parallax effect: image stays still while text scrolls */
             font-family: var(--font-stack);
             margin: 0;
-            overflow: hidden;
-            min-height: 100%;
+            overflow-y: auto; /* FIXED: Allows scrolling */
+            min-height: 100vh;
             text-transform: lowercase;
+            display: flex;
+            justify-content: center; /* Centers content horizontally */
+            align-items: flex-start;
+        }
+
+        /* --- LAYOUT CONTAINERS --- */
+        .main-wrapper {
+            width: 90%;
+            max-width: 600px; /* Wider for better readability */
+            margin-top: 10vh; /* Space from top */
+            margin-bottom: 10vh;
+            z-index: 2;
         }
 
         /* --- INDEPENDENT HEADER --- */
         header {
-            position: absolute;
-            top: 32%;
-            left: 5%;
-            width: 30%;
-            max-width: 400px;
+            text-align: left;
+            margin-bottom: 20px;
             animation: fadeIn 2s ease-out;
-            z-index: 2;
         }
 
         h1 {
-            font-size: 2em;
+            font-size: 2.5em;
             margin: 0;
             color: #fff;
             animation: flicker 3s linear infinite;
@@ -61,28 +71,33 @@
 
         /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
         .hologram-container {
-            position: absolute;
-            top: 40%;
-            left: 5%;
-            width: 30%;
-            max-width: 400px;
+            /* FIXED: Added background color for readability on all screens */
+            background: var(--bg-overlay); 
+            border: 1px solid var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+            padding: 30px;
             color: var(--light-cyan);
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
             animation: fadeIn 2s ease-out 0.2s;
             animation-fill-mode: backwards;
+            border-radius: 4px;
         }
 
         /* --- TYPOGRAPHY & CONTENT --- */
         h2 {
-            font-size: 1.1em;
-            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            margin: 0 0 15px 0;
             color: var(--neon-pink);
             font-weight: bold;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+            padding-bottom: 5px;
+            display: inline-block;
         }
         
         p, .button {
-            font-size: 0.9em;
+            font-size: 0.95em;
             line-height: 1.6;
+            margin-bottom: 15px;
         }
 
         a {
@@ -100,30 +115,37 @@
             height: 1px;
             background: var(--neon-pink);
             box-shadow: 0 0 10px var(--glow-color);
-            margin: 20px 0;
+            margin: 25px 0;
+            opacity: 0.5;
         }
 
         /* --- INTERACTIVE ELEMENTS --- */
         .links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
             align-items: center;
         }
         
         .button {
-            background: none;
-            border: none;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--neon-pink); /* Added border to make buttons pop */
             color: var(--light-cyan);
-            padding: 5px;
+            padding: 8px 12px;
             font-family: var(--font-stack);
             font-weight: bold;
-            text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
+            text-shadow: 0 0 3px var(--light-cyan);
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .button::before { content: '[ '; color: var(--neon-pink); }
-        .button::after { content: ' ]'; color: var(--neon-pink); }
-        .button:hover { color: #fff; }
+        .button::before { content: ''; } /* Removed brackets for cleaner look with borders */
+        .button::after { content: ''; }
+        
+        .button:hover { 
+            color: #000; 
+            background: var(--neon-pink);
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
 
         #status-indicator {
             padding: 8px;
@@ -139,76 +161,71 @@
 
         /* --- RESPONSIVENESS --- */
         @media (max-width: 800px) {
-            body { overflow-y: auto; }
-            header, .hologram-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                width: auto;
-                max-width: none;
-                transform: none;
+            .main-wrapper {
+                width: 95%;
+                margin-top: 5vh;
+            }
+            .links {
+                justify-content: center;
             }
             header {
-                margin: 20px 20px 0 20px;
-            }
-            .hologram-container {
-                margin: 20px;
-                padding: 20px;
-                background: rgba(10, 25, 47, 0.9);
-                border: 1px solid var(--neon-pink);
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>&gt; welcome...</h1>
-    </header>
+    <div class="main-wrapper">
+        <header>
+            <h1>&gt; welcome...</h1>
+        </header>
 
-    <main class="hologram-container">
-        <section>
-            <h2>announcements_</h2>
-            <p><strong>&gt; nov 15, 2025: BIG NEWS.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
+        <main class="hologram-container">
             
-            <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that I'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
+            <section>
+                <h2>quick links_</h2>
+                <div class="links">
+                    <a href="https://plex.weirdplexbutok.biz/" class="button">plex</a>
+                    <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
+                    <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup</a>
+                    <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
+                    <a href="https://www.venmo.com/u/Thomas-Connally" class="button" target="_blank" rel="noopener noreferrer">venmo</a>
+                    <a href="https://paypal.me/thomasconnally1111" class="button" target="_blank" rel="noopener noreferrer">paypal</a>
+                </div>
+            </section>
 
-            <p><strong>&gt; oct 127, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
-            
-            <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
-            
-            <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
-            
-            <p><strong>&gt; sept 25, 2025: upgradja.</strong>upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
-            
-            <p><strong>&gt; aug 21, 2025: apologies.</strong>shit was fucked for a bit there. should be good to go.</p>
-            
-            <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
-            
-            <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
-        </section>
+            <hr>
 
-        <hr>
+            <section>
+                <h2>system status_</h2>
+                <div id="status-indicator">syncing with grid...</div>
+            </section>
 
-        <section>
-            <h2>quick links_</h2>
-            <div class="links">
-                <a href="https://plex.weirdplexbutok.biz/" class="button">plex</a>
-                <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
-                <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup</a>
-                <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
-                <a href="https://www.venmo.com/u/Thomas-Connally" class="button" target="_blank" rel="noopener noreferrer">venmo</a>
-                <a href="https://paypal.me/thomasconnally1111" class="button" target="_blank" rel="noopener noreferrer">paypal</a>
-            </div>
-        </section>
-        
-        <hr>
+            <hr>
 
-        <section>
-            <h2>system status_</h2>
-            <div id="status-indicator">syncing with grid...</div>
-        </section>
-    </main>
+            <section>
+                <h2>announcements_</h2>
+                <p><strong>&gt; nov 15, 2025: BIG NEWS.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
+                
+                <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that I'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
+
+                <p><strong>&gt; oct 127, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
+                
+                <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
+                
+                <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
+                
+                <p><strong>&gt; sept 25, 2025: upgradja.</strong>upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
+                
+                <p><strong>&gt; aug 21, 2025: apologies.</strong>shit was fucked for a bit there. should be good to go.</p>
+                
+                <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
+                
+                <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
+            </section>
+        </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

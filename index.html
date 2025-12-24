@@ -11,7 +11,7 @@
             --neon-yellow: #ffff00;
             --glow-color: rgba(255, 0, 255, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
-            --bg-overlay: rgba(10, 15, 20, 0.85); /* Dark background for readability */
+            --bg-overlay: rgba(10, 15, 20, 0.85);
         }
 
         /* --- KEYFRAME ANIMATIONS --- */
@@ -31,26 +31,31 @@
         
         body {
             background-color: #000000;
-            /* Updated Image Name */
-            background-image: url('greg.png'); 
+            /* Ensure your image is named correctly here */
+            background-image: url('nano_banana.jpg'); 
             background-size: cover;
-            background-position: center center; /* Ensures art is centered */
-            background-attachment: fixed; /* Parallax effect: image stays still while text scrolls */
+            background-position: center center;
+            background-attachment: fixed;
             font-family: var(--font-stack);
             margin: 0;
-            overflow-y: auto; /* FIXED: Allows scrolling */
+            overflow-y: auto;
             min-height: 100vh;
             text-transform: lowercase;
             display: flex;
-            justify-content: center; /* Centers content horizontally */
+            
+            /* CHANGED: Align content to the left start instead of center */
+            justify-content: flex-start; 
             align-items: flex-start;
         }
 
         /* --- LAYOUT CONTAINERS --- */
         .main-wrapper {
             width: 90%;
-            max-width: 600px; /* Wider for better readability */
-            margin-top: 10vh; /* Space from top */
+            max-width: 500px; /* Slightly narrower to stay out of the way */
+            
+            /* CHANGED: Push to the left, leave space for art on right */
+            margin-left: 8%; 
+            margin-top: 10vh;
             margin-bottom: 10vh;
             z-index: 2;
         }
@@ -71,7 +76,6 @@
 
         /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
         .hologram-container {
-            /* FIXED: Added background color for readability on all screens */
             background: var(--bg-overlay); 
             border: 1px solid var(--neon-pink);
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
@@ -94,7 +98,7 @@
             display: inline-block;
         }
         
-        p, .button {
+        p {
             font-size: 0.95em;
             line-height: 1.6;
             margin-bottom: 15px;
@@ -119,32 +123,35 @@
             opacity: 0.5;
         }
 
-        /* --- INTERACTIVE ELEMENTS --- */
+        /* --- INTERACTIVE ELEMENTS (CLEANER) --- */
         .links {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
+            /* CHANGED: Grid layout for cleaner alignment */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            gap: 12px;
+            width: 100%;
         }
         
         .button {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--neon-pink); /* Added border to make buttons pop */
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--neon-pink);
             color: var(--light-cyan);
-            padding: 8px 12px;
+            padding: 10px 5px;
             font-family: var(--font-stack);
             font-weight: bold;
             text-shadow: 0 0 3px var(--light-cyan);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 0.9em;
+            display: block; /* Ensures links fill the grid cell */
         }
-        .button::before { content: ''; } /* Removed brackets for cleaner look with borders */
-        .button::after { content: ''; }
         
         .button:hover { 
             color: #000; 
             background: var(--neon-pink);
             box-shadow: 0 0 15px var(--neon-pink);
+            transform: translateY(-2px);
         }
 
         #status-indicator {
@@ -161,12 +168,18 @@
 
         /* --- RESPONSIVENESS --- */
         @media (max-width: 800px) {
+            body {
+                /* On mobile, center it back up since we don't have width for side-by-side */
+                justify-content: center; 
+            }
             .main-wrapper {
                 width: 95%;
+                margin-left: 0; /* Remove offset on mobile */
                 margin-top: 5vh;
             }
             .links {
-                justify-content: center;
+                /* On very small screens, maybe 2 columns is better? */
+                grid-template-columns: repeat(2, 1fr);
             }
             header {
                 text-align: center;

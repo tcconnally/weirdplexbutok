@@ -9,13 +9,18 @@
             --neon-pink: #ff00ff;
             --light-cyan: #a1ffff;
             --neon-yellow: #ffff00;
+            --neon-green: #50ff50;
             --glow-color: rgba(255, 0, 255, 0.7);
             --font-stack: 'Lucida Console', 'Courier New', monospace;
             --bg-overlay: rgba(10, 15, 20, 0.85);
+            --bg-overlay-dark: rgba(5, 8, 12, 0.92);
         }
 
-        /* --- KEYFRAME ANIMATIONS --- */
         @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDelay {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -23,16 +28,20 @@
             0%, 100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); }
             50% { opacity: 0.8; text-shadow: 0 0 5px #fff, 0 0 12px var(--neon-pink), 0 0 20px var(--neon-pink); }
         }
-
-        /* --- BASE & BACKGROUND --- */
-        html {
-            min-height: 100%;
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(255, 0, 255, 0.45); }
         }
-        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        html { min-height: 100%; }
+
         body {
             background-color: #000000;
-            /* Ensure your image is named correctly here */
-            background-image: url('greg.png'); 
+            background-image: url('greg.png');
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
@@ -42,25 +51,31 @@
             min-height: 100vh;
             text-transform: lowercase;
             display: flex;
-            
-            /* CHANGED: Align content to the left start instead of center */
-            justify-content: flex-start; 
+            justify-content: flex-start;
             align-items: flex-start;
         }
 
-        /* --- LAYOUT CONTAINERS --- */
+        /* scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: rgba(255, 0, 255, 0.06);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+
         .main-wrapper {
             width: 90%;
-            max-width: 500px; /* Slightly narrower to stay out of the way */
-            
-            /* CHANGED: Push to the left, leave space for art on right */
-            margin-left: 8%; 
+            max-width: 520px;
+            margin-left: 8%;
             margin-top: 10vh;
             margin-bottom: 10vh;
             z-index: 2;
         }
 
-        /* --- INDEPENDENT HEADER --- */
         header {
             text-align: left;
             margin-bottom: 20px;
@@ -69,14 +84,20 @@
 
         h1 {
             font-size: 2.5em;
-            margin: 0;
+            margin: 0 0 4px 0;
             color: #fff;
             animation: flicker 3s linear infinite;
         }
 
-        /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
+        .tagline {
+            font-size: 0.75em;
+            color: rgba(161, 255, 255, 0.55);
+            letter-spacing: 0.05em;
+            margin: 0;
+        }
+
         .hologram-container {
-            background: var(--bg-overlay); 
+            background: var(--bg-overlay);
             border: 1px solid var(--neon-pink);
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
             padding: 30px;
@@ -87,7 +108,6 @@
             border-radius: 4px;
         }
 
-        /* --- TYPOGRAPHY & CONTENT --- */
         h2 {
             font-size: 1.2em;
             margin: 0 0 15px 0;
@@ -97,7 +117,7 @@
             padding-bottom: 5px;
             display: inline-block;
         }
-        
+
         p {
             font-size: 0.95em;
             line-height: 1.6;
@@ -123,15 +143,145 @@
             opacity: 0.5;
         }
 
-        /* --- INTERACTIVE ELEMENTS (CLEANER) --- */
-        .links {
-            /* CHANGED: Grid layout for cleaner alignment */
+        /* ---- SUBSCRIBE SECTION ---- */
+        .subscribe-box {
+            background: var(--bg-overlay-dark);
+            border: 1px solid var(--neon-pink);
+            border-radius: 4px;
+            padding: 22px 24px;
+            margin-bottom: 18px;
+            animation: pulse-border 4s ease-in-out infinite;
+        }
+
+        .price-display {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .price-amount {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            line-height: 1;
+        }
+
+        .price-period {
+            font-size: 0.85em;
+            color: rgba(161, 255, 255, 0.65);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .feature-list li {
+            font-size: 0.88em;
+            padding: 5px 0;
+            color: var(--light-cyan);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .feature-list li::before {
+            content: '>';
+            color: var(--neon-pink);
+            flex-shrink: 0;
+        }
+
+        .cta-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .cta-primary {
+            background: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+            color: #000;
+            padding: 12px 8px;
+            font-family: var(--font-stack);
+            font-weight: bold;
+            font-size: 0.9em;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            text-shadow: none;
+            transition: all 0.2s ease;
+            border-radius: 2px;
+        }
+        .cta-primary:hover {
+            background: #fff;
+            border-color: #fff;
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-pink);
+            transform: translateY(-2px);
+        }
+
+        .cta-secondary {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(161, 255, 255, 0.4);
+            color: var(--light-cyan);
+            padding: 12px 8px;
+            font-family: var(--font-stack);
+            font-size: 0.9em;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            transition: all 0.2s ease;
+            border-radius: 2px;
+        }
+        .cta-secondary:hover {
+            border-color: var(--light-cyan);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(161, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ---- STATS ROW ---- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,0,255,0.25);
+            border-radius: 3px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 8px var(--neon-pink);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.7em;
+            color: rgba(161, 255, 255, 0.6);
+            margin-top: 3px;
+            display: block;
+        }
+
+        /* ---- LINKS ---- */
+        .links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             width: 100%;
         }
-        
+
         .button {
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--neon-pink);
@@ -144,67 +294,108 @@
             transition: all 0.2s ease;
             text-align: center;
             font-size: 0.9em;
-            display: block; /* Ensures links fill the grid cell */
+            display: block;
         }
-        
-        .button:hover { 
-            color: #000; 
+
+        .button:hover {
+            color: #000;
             background: var(--neon-pink);
             box-shadow: 0 0 15px var(--neon-pink);
             transform: translateY(-2px);
         }
 
+        /* ---- STATUS ---- */
         #status-indicator {
             padding: 8px;
             text-align: left;
             transition: all 0.5s;
             font-weight: bold;
         }
-        .status-operational { color: #50ff50; text-shadow: 0 0 8px #50ff50;}
+        .status-operational { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
         .status-maintenance { color: var(--light-cyan); text-shadow: 0 0 8px var(--light-cyan); }
         .status-minor-outage { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
         .status-major-outage { color: #ff3c3c; text-shadow: 0 0 8px #ff3c3c; }
 
+        /* ---- GLOBAL NOTE ---- */
+        .global-note {
+            font-size: 0.78em;
+            color: rgba(161, 255, 255, 0.5);
+            border-left: 2px solid rgba(255, 0, 255, 0.3);
+            padding-left: 10px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
 
-        /* --- RESPONSIVENESS --- */
         @media (max-width: 800px) {
-            body {
-                /* On mobile, center it back up since we don't have width for side-by-side */
-                justify-content: center; 
-            }
-            .main-wrapper {
-                width: 95%;
-                margin-left: 0; /* Remove offset on mobile */
-                margin-top: 5vh;
-            }
-            .links {
-                /* On very small screens, maybe 2 columns is better? */
-                grid-template-columns: repeat(2, 1fr);
-            }
-            header {
-                text-align: center;
-            }
+            body { justify-content: center; }
+            .main-wrapper { width: 95%; margin-left: 0; margin-top: 5vh; }
+            .links { grid-template-columns: repeat(2, 1fr); }
+            .cta-grid { grid-template-columns: 1fr; }
+            header { text-align: center; }
         }
     </style>
 </head>
 <body>
-
     <div class="main-wrapper">
         <header>
-            <h1>&gt; welcome...</h1>
+            <h1>&gt; welcome to greg_</h1>
+            <p class="tagline">// a private media server. worldwide.</p>
         </header>
 
         <main class="hologram-container">
-            
+
+            <section>
+                <h2>subscribe_</h2>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-value">194tb</span>
+                        <span class="stat-label">library size</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">4k</span>
+                        <span class="stat-label">content included</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">global</span>
+                        <span class="stat-label">access, always</span>
+                    </div>
+                </div>
+
+                <div class="subscribe-box">
+                    <div class="price-display">
+                        <span class="price-amount">$10</span>
+                        <span class="price-period">/ month</span>
+                    </div>
+
+                    <ul class="feature-list">
+                        <li>jellyfin access — stream on any device, anywhere</li>
+                        <li>movies, tv, 4k content — massive and always growing</li>
+                        <li>request new content via the request portal</li>
+                        <li>no throttling. no ads. no bullshit.</li>
+                        <li>payment via ko-fi, venmo, or paypal</li>
+                    </ul>
+
+                    <div class="cta-grid">
+                        <a href="https://ko-fi.com/YOUR_KOFI_HANDLE" class="cta-primary" target="_blank" rel="noopener noreferrer">&gt; subscribe now</a>
+                        <a href="https://registration.weirdplexbutok.biz" class="cta-secondary" target="_blank" rel="noopener noreferrer">already paid? register_</a>
+                    </div>
+                </div>
+
+                <p class="global-note">// accepted worldwide. no vpn required. pay with any major card via ko-fi, or venmo/paypal. after payment, use the register link above to create your jellyfin account.</p>
+            </section>
+
+            <hr>
+
             <section>
                 <h2>quick links_</h2>
                 <div class="links">
+                    <a href="https://jellyfin.weirdplexbutok.biz/" class="button">jellyfin</a>
                     <a href="https://plex.weirdplexbutok.biz/" class="button">plex</a>
                     <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
-                    <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup</a>
+                    <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup guide</a>
                     <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
-                    <a href="https://www.venmo.com/u/Thomas-Connally" class="button" target="_blank" rel="noopener noreferrer">venmo</a>
-                    <a href="https://paypal.me/thomasconnally1111" class="button" target="_blank" rel="noopener noreferrer">paypal</a>
+                    <a href="https://registration.weirdplexbutok.biz" class="button">register</a>
                 </div>
             </section>
 
@@ -219,26 +410,22 @@
 
             <section>
                 <h2>announcements_</h2>
+
+                <p><strong>&gt; apr 11, 2026: subscriptions open.</strong> greg is now accepting new subscribers. $10/month via ko-fi gets you jellyfin access to the full 194tb library. use the register link after payment to get set up instantly.</p>
+
                 <p><strong>&gt; jan 17, 2026: New Year, same me.</strong> i'm in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
-                
+
                 <p><strong>&gt; nov 15, 2025: BIG NEWS.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
-                
+
                 <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that I'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
 
                 <p><strong>&gt; oct 27, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
-                
+
                 <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
-                
+
                 <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
-                
-                <p><strong>&gt; sept 25, 2025: upgradja.</strong>upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
-                
-                <p><strong>&gt; aug 21, 2025: apologies.</strong>shit was fucked for a bit there. should be good to go.</p>
-                
-                <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
-                
-                <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
             </section>
+
         </main>
     </div>
 
@@ -256,16 +443,14 @@
                     const status = data.status.indicator;
                     const description = data.status.description;
                     statusIndicator.textContent = description.toLowerCase();
-                    
-                    if (status === 'none') { statusIndicator.className = 'status-operational'; } 
-                    else if (status === 'minor') { statusIndicator.className = 'status-minor-outage'; } 
-                    else if (status === 'major') { statusIndicator.className = 'status-major-outage'; } 
+                    if (status === 'none') { statusIndicator.className = 'status-operational'; }
+                    else if (status === 'minor') { statusIndicator.className = 'status-minor-outage'; }
+                    else if (status === 'major') { statusIndicator.className = 'status-major-outage'; }
                     else if (status === 'maintenance') { statusIndicator.className = 'status-maintenance'; }
                 })
-                .catch(error => {
+                .catch(() => {
                     statusIndicator.textContent = 'connection severed';
                     statusIndicator.className = 'status-major-outage';
-                    console.error('Error fetching status:', error);
                 });
         });
     </script>

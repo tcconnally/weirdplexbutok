@@ -154,18 +154,6 @@
             transform: translateY(-2px);
         }
 
-        #status-indicator {
-            padding: 8px;
-            text-align: left;
-            transition: all 0.5s;
-            font-weight: bold;
-        }
-        .status-operational { color: #50ff50; text-shadow: 0 0 8px #50ff50;}
-        .status-maintenance { color: var(--light-cyan); text-shadow: 0 0 8px var(--light-cyan); }
-        .status-minor-outage { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
-        .status-major-outage { color: #ff3c3c; text-shadow: 0 0 8px #ff3c3c; }
-
-
         /* --- RESPONSIVENESS --- */
         @media (max-width: 800px) {
             body {
@@ -211,13 +199,6 @@
             <hr>
 
             <section>
-                <h2>system status_</h2>
-                <div id="status-indicator">syncing with grid...</div>
-            </section>
-
-            <hr>
-
-            <section>
                 <h2>announcements_</h2>
                 <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn't shit the bed as often going forward.</p>
 
@@ -244,32 +225,5 @@
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const statusIndicator = document.getElementById('status-indicator');
-            const apiUrl = 'https://weirdplexbutok.statuspage.io/api/v2/summary.json';
-
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) { throw new Error('Network response was not ok'); }
-                    return response.json();
-                })
-                .then(data => {
-                    const status = data.status.indicator;
-                    const description = data.status.description;
-                    statusIndicator.textContent = description.toLowerCase();
-                    
-                    if (status === 'none') { statusIndicator.className = 'status-operational'; } 
-                    else if (status === 'minor') { statusIndicator.className = 'status-minor-outage'; } 
-                    else if (status === 'major') { statusIndicator.className = 'status-major-outage'; } 
-                    else if (status === 'maintenance') { statusIndicator.className = 'status-maintenance'; }
-                })
-                .catch(error => {
-                    statusIndicator.textContent = 'connection severed';
-                    statusIndicator.className = 'status-major-outage';
-                    console.error('Error fetching status:', error);
-                });
-        });
-    </script>
 </body>
 </html>

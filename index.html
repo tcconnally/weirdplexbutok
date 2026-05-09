@@ -527,7 +527,7 @@
             }
         })();
 
-        // Live status: polls /status.json. Falls back to faux when absent/stale.
+        // Live status: polls greg's status endpoint. Falls back to faux when absent/stale.
         const gregStatus = { data: null, lastOk: 0 };
         const FAUX_MSGS = [
             '[greg] :: pulse OK',
@@ -564,7 +564,7 @@
 
         async function fetchStatus() {
             try {
-                const r = await fetch('/status.json', { cache: 'no-store' });
+                const r = await fetch('https://status.weirdplexbutok.biz/status.json', { cache: 'no-store' });
                 if (!r.ok) throw new Error('no status');
                 gregStatus.data = await r.json();
                 gregStatus.lastOk = Date.now();

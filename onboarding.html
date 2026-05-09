@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~:greg:~ onboarding_</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #06e3ff;
+            --neon-pink: #ff2bd6;
+            --neon-green: #5dffb1;
+            --neon-yellow: #ffe600;
+            --bg: #0a0512;
+            --font-stack: "Share Tech Mono", monospace;
+        }
+        body {
+            background: var(--bg);
+            color: #eee;
+            font-family: var(--font-stack);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 { color: var(--neon-cyan); text-transform: lowercase; }
+        h1 { border-bottom: 2px solid var(--neon-pink); padding-bottom: 10px; }
+        .back { color: var(--neon-green); text-decoration: none; display: block; margin-bottom: 20px; }
+        .back:hover { text-decoration: underline; }
+        section { margin-bottom: 30px; border: 1px solid rgba(6, 227, 255, 0.2); padding: 20px; background: rgba(255, 255, 255, 0.02); }
+        .q { color: var(--neon-yellow); font-weight: bold; display: block; margin-bottom: 5px; }
+        .a { color: #ccc; }
+        code { background: rgba(255, 255, 255, 0.1); padding: 2px 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">&lt; back to terminal_</a>
+    <h1>&gt; new user onboarding & faq_</h1>
+    
+    <section>
+        <h2>&gt; the basics_</h2>
+        <p>welcome to <strong>greg</strong>. it's a private media ecosystem built on unraid and plex. it's not always stable, but it's always free.</p>
+        <p><span class="q">Q: how do i get access?</span>
+        <span class="a">A: typically by invite. if you have a link to the registration portal (wizarr), use it. otherwise, contact thomas.</span></p>
+    </section>
+
+    <section>
+        <h2>&gt; streaming_</h2>
+        <p><span class="q">Q: what apps should i use?</span>
+        <span class="a">A: the official <strong>plex</strong> app is available on smart TVs, apple TV, nvidia shield, and mobile. avoid the web browser player if possible; it causes "transcoding" which kills the server.</span></p>
+        <p><span class="q">Q: it's buffering. why?</span>
+        <span class="a">A: 99% of the time, it's your internet or your settings. in the plex app, set <strong>Remote Quality</strong> to "Original" or "Maximum". greg has a big pipe; use it.</span></p>
+    </section>
+
+    <section>
+        <h2>&gt; requests_</h2>
+        <p><span class="q">Q: how do i ask for new movies/shows?</span>
+        <span class="a">A: use the <strong>request</strong> link on the main page (Overseerr). log in with your plex account, find your show, and hit request. it's automated from there.</span></p>
+    </section>
+
+    <section>
+        <h2>&gt; support_</h2>
+        <p><span class="q">Q: how can i help?</span>
+        <span class="a">A: running 140TB of disks and a modern CPU isn't cheap on the electric bill. if you use greg daily, consider hitting the venmo/paypal links to keep the lights on and the disks spinning.</span></p>
+        <p><span class="q">Q: something is broken.</span>
+        <span class="a">A: email <code>greg@weirdplexbutok.biz</code>. i check it eventually.</span></p>
+    </section>
+</body>
+</html>

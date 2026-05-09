@@ -3,107 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="greg — your favorite weird plex server, but ok.">
     <title>~:greg:~</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-pink: #ff00ff;
+            --neon-pink: #ff2bd6;
+            --neon-pink-soft: rgba(255, 43, 214, 0.6);
             --light-cyan: #a1ffff;
-            --neon-yellow: #ffff00;
-            --glow-color: rgba(255, 0, 255, 0.7);
-            --font-stack: 'Lucida Console', 'Courier New', monospace;
-            --bg-overlay: rgba(10, 15, 20, 0.85);
+            --neon-cyan: #06e3ff;
+            --neon-yellow: #ffe600;
+            --neon-gold: #ffb800;
+            --neon-green: #5dffb1;
+            --glow-color: rgba(255, 43, 214, 0.7);
+            --font-stack: 'Share Tech Mono', 'Lucida Console', 'Courier New', monospace;
+            --font-display: 'VT323', 'Lucida Console', monospace;
+            --bg-overlay: rgba(8, 4, 18, 0.78);
         }
 
-        /* --- KEYFRAME ANIMATIONS --- */
+        /* ── ANIMATIONS ───────────────────────────────────────── */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes flicker {
-            0%, 100% { opacity: 1; text-shadow: 0 0 5px #fff, 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); }
-            50% { opacity: 0.8; text-shadow: 0 0 5px #fff, 0 0 12px var(--neon-pink), 0 0 20px var(--neon-pink); }
+            0%, 100% { opacity: 1; }
+            41.99% { opacity: 1; }
+            42% { opacity: 0; }
+            43% { opacity: 1; }
+            47.99% { opacity: 1; }
+            48% { opacity: 0; }
+            49% { opacity: 1; }
+        }
+        @keyframes scanmove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+        @keyframes pulseDot {
+            0%, 100% { box-shadow: 0 0 4px var(--neon-green), 0 0 12px var(--neon-green); }
+            50%      { box-shadow: 0 0 8px var(--neon-green), 0 0 24px var(--neon-green); transform: scale(1.15); }
+        }
+        @keyframes typewriter {
+            from { width: 0; }
+            to   { width: 11ch; }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        @keyframes glitch-slice {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            10%      { clip-path: inset(20% 0 65% 0); transform: translate(-2px, 1px); }
+            20%      { clip-path: inset(75% 0 5% 0);  transform: translate(2px, -1px); }
+            30%      { clip-path: inset(40% 0 40% 0); transform: translate(-1px, 0); }
+            40%      { clip-path: inset(0 0 0 0);     transform: translate(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-3px); }
+        }
+        @keyframes shimmer {
+            0%   { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes particle-drift {
+            0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10%  { opacity: 0.8; }
+            90%  { opacity: 0.8; }
+            100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+        }
+        @keyframes msg-in {
+            0%   { opacity: 0; transform: translateX(20px); }
+            10%  { opacity: 1; transform: translateX(0); }
+            90%  { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(-20px); }
+        }
+        @keyframes boot-bg {
+            0%   { opacity: 1; }
+            85%  { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        @keyframes violent-glitch {
+            0%, 100% { transform: translate(0); filter: none; }
+            20%      { transform: translate(-4px, 1px); filter: hue-rotate(90deg); }
+            40%      { transform: translate(3px, -2px); filter: hue-rotate(-60deg) saturate(2); }
+            60%      { transform: translate(-2px, 2px); filter: hue-rotate(180deg); }
+            80%      { transform: translate(2px, 0); filter: none; }
         }
 
-        /* --- BASE & BACKGROUND --- */
-        html {
-            min-height: 100%;
-        }
-        
+        /* ── BASE ─────────────────────────────────────────────── */
+        * { box-sizing: border-box; }
+        html { min-height: 100%; }
         body {
-            background-color: #000000;
-            /* Ensure your image is named correctly here */
-            background-image: url('greg.png'); 
+            background-color: #04020a;
+            background-image: url('greg.png');
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
             font-family: var(--font-stack);
             margin: 0;
-            overflow-y: auto;
             min-height: 100vh;
             text-transform: lowercase;
             display: flex;
-            
-            /* CHANGED: Align content to the left start instead of center */
-            justify-content: flex-start; 
+            justify-content: flex-start;
             align-items: flex-start;
+            color: var(--light-cyan);
+            cursor: crosshair;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* --- LAYOUT CONTAINERS --- */
+        /* ── CRT SCANLINES (full-page overlay) ───────────────── */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.18) 0px,
+                rgba(0, 0, 0, 0.18) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            mix-blend-mode: multiply;
+        }
+
+        /* ── CRT VIGNETTE ─────────────────────────────────────── */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+        }
+
+        /* (synthetic grid floor removed — background image owns the grid now) */
+
+        /* ── MOUSE-FOLLOW GLOW ────────────────────────────────── */
+        .cursor-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 500px;
+            height: 500px;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle, rgba(255, 43, 214, 0.18) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            transition: opacity 200ms ease;
+            opacity: 0;
+            mix-blend-mode: screen;
+        }
+        body:hover .cursor-glow { opacity: 1; }
+
+        /* ── LAYOUT ───────────────────────────────────────────── */
         .main-wrapper {
             width: 90%;
-            max-width: 500px; /* Slightly narrower to stay out of the way */
-            
-            /* CHANGED: Push to the left, leave space for art on right */
-            margin-left: 8%; 
-            margin-top: 10vh;
-            margin-bottom: 10vh;
+            max-width: 520px;
+            margin-left: 6%;
+            margin-top: 12vh;
+            margin-bottom: 12vh;
             z-index: 2;
+            position: relative;
         }
 
-        /* --- INDEPENDENT HEADER --- */
+        /* ── HEADER ───────────────────────────────────────────── */
         header {
             text-align: left;
-            margin-bottom: 20px;
-            animation: fadeIn 2s ease-out;
+            margin-bottom: 22px;
+            animation: fadeIn 1.4s ease-out;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-
+        .h1-wrap {
+            position: relative;
+            display: inline-block;
+        }
         h1 {
-            font-size: 2.5em;
+            font-family: var(--font-display);
+            font-size: 3.6em;
             margin: 0;
             color: #fff;
-            animation: flicker 3s linear infinite;
+            line-height: 1;
+            letter-spacing: 0.02em;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 14px var(--neon-pink),
+                0 0 26px var(--neon-pink);
+            animation: flicker 6s linear infinite;
+            position: relative;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid var(--neon-pink);
+            width: 11ch;
+            animation:
+                typewriter 1.4s steps(11, end) 0.2s 1 normal both,
+                blink 0.85s step-end infinite,
+                flicker 6s linear 1.6s infinite;
         }
 
-        /* --- HOLOGRAPHIC PROJECTOR LAYOUT --- */
+        /* ── GLITCH (RGB-split slices behind h1) ──────────────── */
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            overflow: hidden;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+        .glitch::before {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 6px var(--neon-cyan);
+            animation: glitch-slice 4s infinite linear alternate;
+            mix-blend-mode: screen;
+            opacity: 0.8;
+        }
+        .glitch::after {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 6px var(--neon-yellow);
+            animation: glitch-slice 4s infinite linear alternate-reverse;
+            animation-delay: 0.4s;
+            mix-blend-mode: screen;
+            opacity: 0.6;
+        }
+
+        /* ── STATUS DOT ───────────────────────────────────────── */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+            color: var(--neon-green);
+            text-shadow: 0 0 6px var(--neon-green);
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out 1.8s forwards;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            animation: pulseDot 1.6s ease-in-out infinite;
+        }
+
+        /* ── HOLOGRAPHIC PROJECTOR ────────────────────────────── */
         .hologram-container {
-            background: var(--bg-overlay); 
+            background: var(--bg-overlay);
             border: 1px solid var(--neon-pink);
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+            box-shadow:
+                0 0 24px rgba(255, 43, 214, 0.25),
+                inset 0 0 30px rgba(6, 227, 255, 0.04);
             padding: 30px;
             color: var(--light-cyan);
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
-            animation: fadeIn 2s ease-out 0.2s;
+            animation: fadeIn 1.6s ease-out 0.4s;
             animation-fill-mode: backwards;
             border-radius: 4px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 200ms ease-out;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        .hologram-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+            animation: float 3s ease-in-out infinite;
+        }
+        .hologram-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 4px;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(6, 227, 255, 0.025) 0px,
+                rgba(6, 227, 255, 0.025) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            pointer-events: none;
         }
 
-        /* --- TYPOGRAPHY & CONTENT --- */
+        /* ── TYPOGRAPHY & CONTENT ─────────────────────────────── */
         h2 {
-            font-size: 1.2em;
-            margin: 0 0 15px 0;
+            font-family: var(--font-display);
+            font-size: 1.6em;
+            margin: 0 0 18px 0;
             color: var(--neon-pink);
-            font-weight: bold;
-            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
-            padding-bottom: 5px;
+            font-weight: normal;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid rgba(255, 43, 214, 0.35);
+            padding-bottom: 6px;
             display: inline-block;
         }
-        
         p {
             font-size: 0.95em;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            line-height: 1.65;
+            margin-bottom: 14px;
         }
-
         a {
             color: var(--neon-pink);
             text-decoration: none;
@@ -113,77 +325,256 @@
             color: #fff;
             text-shadow: 0 0 10px var(--neon-pink);
         }
-
         hr {
             border: 0;
             height: 1px;
-            background: var(--neon-pink);
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
             box-shadow: 0 0 10px var(--glow-color);
-            margin: 25px 0;
-            opacity: 0.5;
+            margin: 30px 0 28px;
+            opacity: 0.55;
         }
 
-        /* --- INTERACTIVE ELEMENTS (CLEANER) --- */
+        /* ── BUTTON GRID ──────────────────────────────────────── */
         .links {
-            /* CHANGED: Grid layout for cleaner alignment */
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             width: 100%;
         }
-        
+        .support {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin-top: 14px;
+        }
+        .support-label {
+            font-family: var(--font-display);
+            font-size: 1em;
+            color: var(--neon-gold);
+            letter-spacing: 0.18em;
+            text-shadow: 0 0 6px var(--neon-gold);
+            margin: 18px 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .support-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--neon-gold), transparent);
+        }
         .button {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.45);
             border: 1px solid var(--neon-pink);
             color: var(--light-cyan);
-            padding: 10px 5px;
+            padding: 12px 5px;
             font-family: var(--font-stack);
-            font-weight: bold;
+            font-weight: normal;
             text-shadow: 0 0 3px var(--light-cyan);
-            cursor: pointer;
-            transition: all 0.2s ease;
+            cursor: crosshair;
+            transition: all 0.18s ease;
             text-align: center;
-            font-size: 0.9em;
-            display: block; /* Ensures links fill the grid cell */
+            font-size: 0.95em;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.04em;
         }
-        
-        .button:hover { 
-            color: #000; 
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+            transition: left 0.5s ease;
+        }
+        .button:hover::before { left: 100%; }
+        .button:hover {
+            color: #000;
             background: var(--neon-pink);
-            box-shadow: 0 0 15px var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink), inset 0 0 10px rgba(255,255,255,0.2);
             transform: translateY(-2px);
+            text-shadow: none;
         }
 
-        /* --- RESPONSIVENESS --- */
+        /* ── SUPPORT BUTTONS (gold accent, slightly louder) ──── */
+        .button.support-btn {
+            border-color: var(--neon-gold);
+            color: var(--neon-gold);
+            text-shadow: 0 0 4px var(--neon-gold);
+            font-size: 1.05em;
+            padding: 14px 5px;
+            background:
+                linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 184, 0, 0.18) 50%,
+                    transparent 100%) repeat,
+                rgba(0, 0, 0, 0.5);
+            background-size: 200% 100%, 100% 100%;
+            animation: shimmer 3.5s linear infinite;
+        }
+        .button.support-btn::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 184, 0, 0.35), transparent);
+        }
+        .button.support-btn:hover {
+            background: var(--neon-gold);
+            color: #000;
+            box-shadow:
+                0 0 24px var(--neon-gold),
+                0 0 48px rgba(255, 184, 0, 0.4),
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: none;
+            animation: none;
+        }
+
+        /* ── AMBIENT FLOATING PARTICLES ───────────────────────── */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 6px var(--neon-pink);
+            border-radius: 50%;
+            animation: particle-drift linear infinite;
+        }
+        .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
+        .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
+
+        /* ── SYSTEM MESSAGE STREAM (corner log) ───────────────── */
+        .sysmsg {
+            position: fixed;
+            bottom: 16px;
+            right: 18px;
+            font-family: var(--font-stack);
+            font-size: 0.78em;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 5;
+            text-align: right;
+            min-height: 1.2em;
+            white-space: nowrap;
+        }
+        .sysmsg .line {
+            animation: msg-in 4s ease-in-out forwards;
+        }
+
+        /* ── BOOT SEQUENCE OVERLAY ────────────────────────────── */
+        .boot {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background: #04020a;
+            color: var(--neon-green);
+            font-family: var(--font-stack);
+            font-size: 0.95em;
+            padding: 24px 30px;
+            line-height: 1.5;
+            overflow: hidden;
+            animation: boot-bg 1.4s ease-out forwards;
+            text-shadow: 0 0 4px var(--neon-green);
+        }
+        .boot pre {
+            margin: 0;
+            white-space: pre-wrap;
+            color: var(--neon-pink);
+            text-shadow: 0 0 6px var(--neon-pink);
+        }
+        .boot .ok { color: var(--neon-green); }
+        .boot .warn { color: var(--neon-yellow); }
+        .boot .err  { color: var(--neon-pink); }
+
+        /* ── ANNOUNCEMENT TIMELINE ────────────────────────────── */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            border-left: 1px solid rgba(255, 43, 214, 0.35);
+        }
+        .timeline p {
+            position: relative;
+            margin-bottom: 18px;
+            transition: opacity 0.2s ease;
+        }
+        .timeline p::before {
+            content: "";
+            position: absolute;
+            left: -29px;
+            top: 9px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--neon-pink);
+            box-shadow: 0 0 8px var(--neon-pink);
+        }
+        .timeline p:first-child::before {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 12px var(--neon-cyan);
+            animation: pulseDot 1.8s ease-in-out infinite;
+        }
+        .timeline p:nth-child(n+5) { opacity: 0.7; }
+        .timeline p:nth-child(n+8) { opacity: 0.5; }
+        .timeline p:hover { opacity: 1; }
+
+        /* ── KONAMI MODE (chromatic aberration) ───────────────── */
+        body.konami {
+            animation: hueShift 6s linear infinite;
+        }
+        @keyframes hueShift {
+            from { filter: hue-rotate(0deg) saturate(1.2); }
+            to   { filter: hue-rotate(360deg) saturate(1.2); }
+        }
+
+        /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 800px) {
-            body {
-                /* On mobile, center it back up since we don't have width for side-by-side */
-                justify-content: center; 
-            }
+            body { justify-content: center; }
             .main-wrapper {
                 width: 95%;
-                margin-left: 0; /* Remove offset on mobile */
+                margin-left: 0;
                 margin-top: 5vh;
             }
-            .links {
-                /* On very small screens, maybe 2 columns is better? */
-                grid-template-columns: repeat(2, 1fr);
-            }
-            header {
-                text-align: center;
+            .links { grid-template-columns: repeat(2, 1fr); }
+            header { text-align: center; align-items: center; }
+            h1 { font-size: 2.6em; width: 11ch; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
 <body>
 
+    <div class="boot" id="boot"><pre id="bootlog"></pre></div>
+    <div class="particles" id="particles"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="sysmsg" id="sysmsg"></div>
+
     <div class="main-wrapper">
         <header>
-            <h1>&gt; welcome...</h1>
+            <div class="h1-wrap">
+                <h1 class="glitch" data-text="&gt; welcome...">&gt; welcome...</h1>
+            </div>
+            <span class="status">
+                <span class="status-dot"></span>
+                <span>greg.online</span>
+            </span>
         </header>
 
         <main class="hologram-container">
-            
+
             <section>
                 <h2>quick links_</h2>
                 <div class="links">
@@ -191,8 +582,13 @@
                     <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
                     <a href="https://mediaclients.wiki/" class="button" target="_blank" rel="noopener noreferrer">setup</a>
                     <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
-                    <a href="https://www.venmo.com/u/Thomas-Connally" class="button" target="_blank" rel="noopener noreferrer">venmo</a>
-                    <a href="https://paypal.me/thomasconnally1111" class="button" target="_blank" rel="noopener noreferrer">paypal</a>
+                </div>
+
+                <div class="support-label">::: support greg :::</div>
+                <div class="support">
+                    <a href="https://www.venmo.com/u/Thomas-Connally" class="button support-btn" target="_blank" rel="noopener noreferrer">venmo</a>
+                    <a href="https://paypal.me/thomasconnally1111" class="button support-btn" target="_blank" rel="noopener noreferrer">paypal</a>
+                    <a href="https://www.amazon.com/hz/wishlist/ls/2ZIX2XZ72O4YZ?ref_=wl_share" class="button support-btn" target="_blank" rel="noopener noreferrer">drives</a>
                 </div>
             </section>
 
@@ -200,30 +596,185 @@
 
             <section>
                 <h2>announcements_</h2>
-                <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn't shit the bed as often going forward.</p>
+                <div class="timeline">
+                    <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn't shit the bed as often going forward.</p>
 
-                <p><strong>&gt; jan 17, 2026: New Year, same me.</strong> i'm in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
-                
-                <p><strong>&gt; nov 15, 2025: BIG NEWS.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
-                
-                <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that I'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
+                    <p><strong>&gt; jan 17, 2026: new year, same me.</strong> i'm in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
 
-                <p><strong>&gt; oct 27, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
-                
-                <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
-                
-                <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
-                
-                <p><strong>&gt; sept 25, 2025: upgradja.</strong>upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
-                
-                <p><strong>&gt; aug 21, 2025: apologies.</strong>shit was fucked for a bit there. should be good to go.</p>
-                
-                <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
-                
-                <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
+                    <p><strong>&gt; nov 15, 2025: big news.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
+
+                    <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that i'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
+
+                    <p><strong>&gt; oct 27, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
+
+                    <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
+
+                    <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
+
+                    <p><strong>&gt; sept 25, 2025: upgradja.</strong> upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
+
+                    <p><strong>&gt; aug 21, 2025: apologies.</strong> shit was fucked for a bit there. should be good to go.</p>
+
+                    <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
+
+                    <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
+                </div>
             </section>
         </main>
     </div>
+
+    <script>
+        // ── BOOT SEQUENCE ────────────────────────────────────
+        (function boot() {
+            const lines = [
+                '> greg.os v4.7.1 booting...',
+                '> kernel: <span class="ok">[ ok ]</span> 6.6.55-Unraid',
+                '> mounting /mnt/user0 ........ <span class="ok">[ ok ]</span> 33.9 TB free',
+                '> dockd: 41 containers ...... <span class="ok">[ ok ]</span>',
+                '> qsv: i5-13500 transcoder .. <span class="warn">[ warn ]</span> ceiling @ 3 streams',
+                '> cloudflared: tunnel up .... <span class="ok">[ ok ]</span>',
+                '> plex: ready',
+                '> jellyfin: ready',
+                '> sonarr radarr bazarr: ready',
+                '> homepage: ready',
+                '> <span class="err">!! anomaly: greg is awake !!</span>',
+                '> handing off to userland...'
+            ];
+            const log = document.getElementById('bootlog');
+            const boot = document.getElementById('boot');
+            if (!log || !boot) return;
+            let i = 0;
+            const tick = setInterval(() => {
+                log.innerHTML += lines[i] + '\n';
+                i++;
+                if (i >= lines.length) clearInterval(tick);
+            }, 80);
+            setTimeout(() => { boot.style.display = 'none'; }, 1500);
+        })();
+
+        // ── AMBIENT FLOATING PARTICLES ──────────────────────
+        (function particles() {
+            const c = document.getElementById('particles');
+            if (!c) return;
+            const colors = ['', 'cyan', 'gold'];
+            for (let i = 0; i < 28; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle ' + colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = (Math.random() * 100) + '%';
+                p.style.animationDuration = (10 + Math.random() * 18) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                p.style.opacity = (0.3 + Math.random() * 0.5).toFixed(2);
+                c.appendChild(p);
+            }
+        })();
+
+        // ── SYSTEM MESSAGE STREAM ───────────────────────────
+        (function sysmsg() {
+            const el = document.getElementById('sysmsg');
+            if (!el) return;
+            const messages = [
+                '[greg] :: pulse OK',
+                '[transcoder] :: queue clear',
+                '[net] :: 2.5 GbE link up',
+                '[disk] :: parity sync nominal',
+                '[plex] :: 4 streams active',
+                '[temp] :: cpu 71.2C',
+                '[fans] :: 1840 rpm',
+                '[ram] :: 21.4 GiB free',
+                '[scan] :: 0 anomalies',
+                '[cache] :: 1.5 TB free',
+                '[uptime] :: 5d 03h',
+                '[seerr] :: 9 available',
+                '[radarr] :: queue clear',
+                '[backup] :: zerobyte ok',
+                '[ntfy] :: 0 pending',
+                '[uk] :: all 28 monitors green',
+                '[greg] :: vibing'
+            ];
+            function fire() {
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.textContent = messages[Math.floor(Math.random() * messages.length)];
+                el.appendChild(line);
+                setTimeout(() => line.remove(), 4200);
+                setTimeout(fire, 1800 + Math.random() * 2200);
+            }
+            setTimeout(fire, 1800);
+        })();
+
+        // ── RANDOM VIOLENT GLITCH BURSTS ON H1 ──────────────
+        (function violentGlitch() {
+            const h1 = document.querySelector('h1.glitch');
+            if (!h1) return;
+            function fire() {
+                h1.style.animation = 'violent-glitch 0.32s steps(2, end) 1, blink 0.85s step-end infinite';
+                setTimeout(() => {
+                    h1.style.animation = '';
+                }, 320);
+                setTimeout(fire, 6000 + Math.random() * 9000);
+            }
+            setTimeout(fire, 4000);
+        })();
+
+        // ── PARALLAX BACKGROUND ─────────────────────────────
+        (function parallax() {
+            if (!window.matchMedia('(min-width: 800px)').matches) return;
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 14;
+                const y = (e.clientY / window.innerHeight - 0.5) * 14;
+                document.body.style.backgroundPosition = `calc(50% + ${x}px) calc(50% + ${y}px)`;
+            });
+        })();
+
+        // mouse-follow glow
+        const glow = document.getElementById('cursorGlow');
+        let raf = null;
+        let tx = 0, ty = 0, cx = 0, cy = 0;
+        document.addEventListener('mousemove', (e) => {
+            tx = e.clientX; ty = e.clientY;
+            glow.style.opacity = '1';
+            if (!raf) raf = requestAnimationFrame(loop);
+        });
+        function loop() {
+            cx += (tx - cx) * 0.18;
+            cy += (ty - cy) * 0.18;
+            glow.style.transform = `translate(${cx - 250}px, ${cy - 250}px)`;
+            if (Math.abs(tx - cx) > 0.4 || Math.abs(ty - cy) > 0.4) {
+                raf = requestAnimationFrame(loop);
+            } else {
+                raf = null;
+            }
+        }
+
+        // hologram tilt on mousemove (subtle)
+        const holo = document.querySelector('.hologram-container');
+        if (holo && window.matchMedia('(min-width: 800px)').matches) {
+            document.addEventListener('mousemove', (e) => {
+                const r = holo.getBoundingClientRect();
+                const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+                const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+                holo.style.transform = `perspective(900px) rotateY(${dx * 2}deg) rotateX(${-dy * 1.4}deg)`;
+            });
+            document.addEventListener('mouseleave', () => {
+                holo.style.transform = 'perspective(900px) rotateY(0) rotateX(0)';
+            });
+        }
+
+        // konami code → chromatic mode
+        const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let kIdx = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === konami[kIdx].toLowerCase()) {
+                kIdx++;
+                if (kIdx === konami.length) {
+                    document.body.classList.toggle('konami');
+                    kIdx = 0;
+                }
+            } else {
+                kIdx = 0;
+            }
+        });
+    </script>
 
 </body>
 </html>

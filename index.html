@@ -116,7 +116,6 @@
         }
         a, button, .button { cursor: crosshair; }
 
-        /* ── CRT SCANLINES (full-page overlay) ───────────────── */
         body::before {
             content: "";
             position: fixed;
@@ -133,7 +132,6 @@
             mix-blend-mode: multiply;
         }
 
-        /* ── CRT VIGNETTE ─────────────────────────────────────── */
         body::after {
             content: "";
             position: fixed;
@@ -143,9 +141,6 @@
             background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
         }
 
-        /* (synthetic grid floor removed — background image owns the grid now) */
-
-        /* ── MOUSE-FOLLOW GLOW ────────────────────────────────── */
         .cursor-glow {
             position: fixed;
             top: 0; left: 0;
@@ -161,7 +156,6 @@
         }
         body:hover .cursor-glow { opacity: 1; }
 
-        /* ── LAYOUT ───────────────────────────────────────────── */
         .main-wrapper {
             width: 90%;
             max-width: 520px;
@@ -172,7 +166,6 @@
             position: relative;
         }
 
-        /* ── HEADER ───────────────────────────────────────────── */
         header {
             text-align: left;
             margin-bottom: 22px;
@@ -209,7 +202,6 @@
                 flicker 6s linear 1.6s infinite;
         }
 
-        /* ── GLITCH (RGB-split slices behind h1) ──────────────── */
         .glitch::before,
         .glitch::after {
             content: attr(data-text);
@@ -237,7 +229,6 @@
             opacity: 0.6;
         }
 
-        /* ── STATUS DOT ───────────────────────────────────────── */
         .status {
             display: inline-flex;
             align-items: center;
@@ -257,7 +248,6 @@
             animation: pulseDot 1.6s ease-in-out infinite;
         }
 
-        /* ── HOLOGRAPHIC PROJECTOR ────────────────────────────── */
         .hologram-container {
             background: var(--bg-overlay);
             border: 1px solid var(--neon-pink);
@@ -299,7 +289,6 @@
             pointer-events: none;
         }
 
-        /* ── TYPOGRAPHY & CONTENT ─────────────────────────────── */
         h2 {
             font-family: var(--font-display);
             font-size: 1.6em;
@@ -334,7 +323,6 @@
             opacity: 0.55;
         }
 
-        /* ── BUTTON GRID ──────────────────────────────────────── */
         .links {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -398,7 +386,6 @@
             text-shadow: none;
         }
 
-        /* ── SUPPORT BUTTONS (gold accent, slightly louder) ──── */
         .button.support-btn {
             border-color: var(--neon-gold);
             color: var(--neon-gold);
@@ -428,7 +415,6 @@
             animation: none;
         }
 
-        /* ── AMBIENT FLOATING PARTICLES ───────────────────────── */
         .particles {
             position: fixed;
             inset: 0;
@@ -448,48 +434,45 @@
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
-        /* ── ROLLING STAT QUEUE — single stream, two columns ───── */
-        .sysmsg {
+        /* ── BOTTOM TICKER ────────────────────────────────────── */
+        .ticker-wrap {
             position: fixed;
-            bottom: 18px;
-            font-family: var(--font-stack);
-            font-weight: 700;
-            font-size: 1.18em;
-            text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55);
-            pointer-events: none;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            overflow: hidden;
             z-index: 5;
-            white-space: nowrap;
+            pointer-events: none;
+            background: rgba(4, 2, 10, 0.7);
+            border-top: 1px solid rgba(93, 255, 177, 0.25);
+        }
+        .ticker {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            letter-spacing: 0.04em;
+            gap: 0;
+            white-space: nowrap;
+            font-family: var(--font-stack);
+            font-size: 0.88em;
+            font-weight: 700;
             color: var(--neon-green);
-            text-align: left;
+            text-shadow: 0 0 6px var(--neon-green);
+            letter-spacing: 0.04em;
+            line-height: 32px;
+            animation: ticker-scroll linear infinite;
         }
-        .sysmsg-right { right: 22px;  max-width: 26vw; }
-        .sysmsg-left  { right: 27vw;  max-width: 30vw; }
-        @keyframes line-in {
-            from { opacity: 0; transform: translateX(-18px); }
-            to   { opacity: 1; transform: translateX(0); }
+        .ticker span {
+            padding: 0 24px;
         }
-        @keyframes line-out {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(10px); }
+        .ticker span::before {
+            content: "//";
+            opacity: 0.35;
+            margin-right: 10px;
         }
-        .sysmsg .line {
-            animation: line-in 0.55s ease-out forwards;
-            font-variant-ligatures: none;
-        }
-        .sysmsg .line .lbl {
-            display: inline-block;
-            width: 14ch;
-            text-align: left;
-        }
-        .sysmsg .line.fading {
-            animation: line-out 0.45s ease-in forwards;
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
         }
 
-        /* ── LIVE OPS STRIP ─────────────────────────────────── */
         .live-ops {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -544,11 +527,9 @@
         }
         .op-tile.flash { animation: valueFlash 0.6s ease-out; }
 
-        /* Bigger status dot in the header */
         .status { font-size: 1.05em; }
         .status-dot { width: 11px; height: 11px; }
 
-        /* ── BOOT SEQUENCE OVERLAY ────────────────────────────── */
         .boot {
             position: fixed;
             inset: 0;
@@ -573,7 +554,6 @@
         .boot .warn { color: var(--neon-yellow); }
         .boot .err  { color: var(--neon-pink); }
 
-        /* ── NOW WATCHING CARD ───────────────────────────────── */
         .now-watching {
             border: 1px solid var(--neon-cyan);
             background: rgba(0, 0, 0, 0.35);
@@ -598,7 +578,7 @@
             gap: 8px;
         }
         .now-watching .nw-label::before {
-            content: "▶";
+            content: "\25B6";
             animation: blink 1.2s step-end infinite;
         }
         .now-watching .nw-titles { line-height: 1.5; }
@@ -613,7 +593,6 @@
         .now-watching.silent .nw-label { color: rgba(255, 255, 255, 0.4); text-shadow: none; }
         .now-watching.silent .nw-label::before { animation: none; opacity: 0.3; }
 
-        /* ── ANNOUNCEMENT TIMELINE ────────────────────────────── */
         .timeline {
             position: relative;
             padding-left: 24px;
@@ -689,7 +668,6 @@
             opacity: 0.6;
         }
 
-        /* ── KONAMI MODE (chromatic aberration) ───────────────── */
         body.konami {
             animation: hueShift 6s linear infinite;
         }
@@ -698,7 +676,6 @@
             to   { filter: hue-rotate(360deg) saturate(1.2); }
         }
 
-        /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 800px) {
             body {
                 justify-content: center;
@@ -712,9 +689,7 @@
             .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
-            .sysmsg { bottom: 10px; font-size: 0.95em; }
-            .sysmsg-left  { right: 8px; max-width: 70vw; }
-            .sysmsg-right { display: none; }
+            .ticker { font-size: 0.78em; }
             .live-ops { grid-template-columns: repeat(2, 1fr); }
             .op-value { font-size: 1.5em; }
         }
@@ -732,8 +707,7 @@
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
-    <div class="sysmsg sysmsg-left" id="sysmsgLeft"></div>
-    <div class="sysmsg sysmsg-right" id="sysmsgRight"></div>
+    <div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
 
     <div class="main-wrapper">
         <header>
@@ -766,19 +740,19 @@
 
             <div class="live-ops" id="liveOps">
                 <div class="op-tile" id="opStreamsTile">
-                    <div class="op-value" id="opStreams">—</div>
+                    <div class="op-value" id="opStreams">&mdash;</div>
                     <div class="op-label">streams</div>
                 </div>
                 <div class="op-tile" id="opCpuTile">
-                    <div class="op-value" id="opCpu">—</div>
+                    <div class="op-value" id="opCpu">&mdash;</div>
                     <div class="op-label">cpu</div>
                 </div>
                 <div class="op-tile" id="opArrayTile">
-                    <div class="op-value" id="opArray">—</div>
+                    <div class="op-value" id="opArray">&mdash;</div>
                     <div class="op-label">free</div>
                 </div>
                 <div class="op-tile" id="opUptimeTile">
-                    <div class="op-value" id="opUptime">—</div>
+                    <div class="op-value" id="opUptime">&mdash;</div>
                     <div class="op-label">uptime</div>
                 </div>
             </div>
@@ -824,7 +798,6 @@
     </div>
 
     <script>
-        // ── BOOT SEQUENCE (skipped on repeat session visits) ─
         (function boot() {
             const log = document.getElementById('bootlog');
             const boot = document.getElementById('boot');
@@ -835,7 +808,7 @@
                     return;
                 }
                 sessionStorage.setItem('greg.bootSeen', '1');
-            } catch (e) { /* private mode — show anyway */ }
+            } catch (e) {}
             const lines = [
                 '> greg.os v4.7.1 booting...',
                 '> kernel: <span class="ok">[ ok ]</span> 6.6.55-Unraid',
@@ -852,14 +825,12 @@
             ];
             let i = 0;
             const tick = setInterval(() => {
-                log.innerHTML += lines[i] + '\n';
-                i++;
+                log.innerHTML += lines[i] + '\n'; i++;
                 if (i >= lines.length) clearInterval(tick);
             }, 80);
             setTimeout(() => { boot.style.display = 'none'; }, 1500);
         })();
 
-        // ── OLDER LOGS TOGGLE ───────────────────────────────
         (function olderLogs() {
             const t = document.getElementById('olderToggle');
             const l = document.getElementById('olderLogs');
@@ -874,7 +845,6 @@
             });
         })();
 
-        // ── AMBIENT FLOATING PARTICLES ──────────────────────
         (function particles() {
             const c = document.getElementById('particles');
             if (!c) return;
@@ -890,8 +860,8 @@
             }
         })();
 
-        // ── LIVE STATUS (graceful fallback to faux) ─────────
         const gregStatus = { data: null, lastOk: 0 };
+
         const FAUX_SYS = [
             '[kernel] :: 6.6.55 stable', '[parity] :: in sync', '[fans] :: nominal',
             '[temp] :: nominal', '[ram] :: healthy', '[gpu] :: idle', '[qsv] :: idle',
@@ -900,9 +870,7 @@
             '[backup] :: zerobyte ok', '[scan] :: 0 anomalies',
             '[dockd] :: containers stable', '[unraid] :: array online',
             '[load] :: nominal', '[swap] :: 0 used', '[clock] :: ntp synced',
-            '[greg] :: pulse OK', '[greg] :: vibing', '[greg] :: holding',
-            '[greg] :: still here', '[greg] :: cosmic', '[greg] :: alive',
-            '[greg] :: humming'
+            '[greg] :: vibing', '[greg] :: holding'
         ];
         const FAUX_MEDIA = [
             '[plex] :: heartbeat', '[plex] :: idle', '[jellyfin] :: standby',
@@ -963,46 +931,14 @@
             }
         }
 
-        function applyStatus() {
-            const dot = document.querySelector('.status-dot');
-            const label = document.querySelector('.status span:last-child');
-            const nw = document.getElementById('nowWatching');
-            const nwT = document.getElementById('nwTitles');
-            const d = gregStatus.data;
-
-            if (d && d.online === false) {
-                if (dot) dot.style.background = 'var(--neon-pink)';
-                if (dot) dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)';
-                if (label) label.textContent = 'greg.offline';
-            } else {
-                if (dot) dot.style.background = 'var(--neon-green)';
-                if (dot) dot.style.boxShadow = '';
-                if (label) label.textContent = 'greg.online';
-            }
-
-            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
-                nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
-                nw.classList.remove('silent');
-                nw.classList.add('live');
-            } else if (d) {
-                nwT.innerHTML = '<span>[silence]</span>';
-                nw.classList.remove('live');
-                nw.classList.add('silent');
-            }
-
-            if (d) {
-                setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
-                setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
-                setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
-                setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
-            }
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
         function formatUptime(s) {
             const dd = Math.floor(s / 86400);
             const hh = Math.floor((s % 86400) / 3600);
-            if (dd > 0) return `${dd}d`;
-            return `${hh}h`;
+            return dd > 0 ? `${dd}d` : `${hh}h`;
         }
 
         function setOp(id, value, unit, classifier) {
@@ -1023,90 +959,88 @@
             if (cls) tile.classList.add(cls);
         }
 
-        function escapeHtml(s) {
-            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        function applyStatus() {
+            const dot = document.querySelector('.status-dot');
+            const label = document.querySelector('.status span:last-child');
+            const nw = document.getElementById('nowWatching');
+            const nwT = document.getElementById('nwTitles');
+            const d = gregStatus.data;
+
+            if (d && d.online === false) {
+                if (dot) { dot.style.background = 'var(--neon-pink)'; dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)'; }
+                if (label) label.textContent = 'greg.offline';
+            } else {
+                if (dot) { dot.style.background = 'var(--neon-green)'; dot.style.boxShadow = ''; }
+                if (label) label.textContent = 'greg.online';
+            }
+
+            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
+                nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
+                nw.classList.remove('silent'); nw.classList.add('live');
+            } else if (d) {
+                nwT.innerHTML = '<span>[silence]</span>';
+                nw.classList.remove('live'); nw.classList.add('silent');
+            }
+
+            if (d) {
+                setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
+                setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
+                setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
+                setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
+            }
         }
 
-        // ── ROLLING STAT QUEUE ──────────────────────────────
-        (function rollingQueue() {
-            const right = document.getElementById('sysmsgRight');
-            const left  = document.getElementById('sysmsgLeft');
-            if (!right || !left) return;
+        // ── BOTTOM TICKER ───────────────────────────────────
+        (function ticker() {
+            const el = document.getElementById('ticker');
+            if (!el) return;
+            const COUNT = 24;
 
-            const LEFT_MAX  = 13;
-            const TOTAL_MAX = 20;
-            const TICK_MIN  = 1800;
-            const TICK_MAX  = 2400;
-            const RECENT_DEPTH = 6;
-
-            const queue  = [];
-            const recent = [];
-
-            function pickMsg() {
+            function buildPool() {
                 const sys  = gregStatus.data ? buildSysMsgs(gregStatus.data) : [];
                 const med  = gregStatus.data ? buildMediaMsgs(gregStatus.data) : [];
                 const live = sys.concat(med);
                 const faux = FAUX_SYS.concat(FAUX_MEDIA);
-                const pool = (live.length >= 3 ? live.concat(faux) : faux.concat(live));
-                let pick, tries = 0;
-                do {
-                    pick = pool[Math.floor(Math.random() * pool.length)];
-                    tries++;
-                } while (recent.includes(pick) && tries < 10);
-                recent.push(pick);
-                while (recent.length > RECENT_DEPTH) recent.shift();
-                return pick;
+                return live.length >= 3 ? live.concat(faux) : faux.concat(live);
             }
 
-            function reflow() {
-                const lim = Math.min(LEFT_MAX, queue.length);
-                for (let i = 0; i < lim; i++) left.appendChild(queue[i]);
-                for (let i = LEFT_MAX; i < queue.length; i++) right.appendChild(queue[i]);
-            }
-
-            function fire() {
-                const node = document.createElement('div');
-                node.className = 'line';
-                const msg = pickMsg();
-                const parts = msg.split(' :: ');
-                if (parts.length === 2) {
-                    node.innerHTML = `<span class="lbl">${escapeHtml(parts[0])}</span> :: ${escapeHtml(parts[1])}`;
-                } else {
-                    node.textContent = msg;
+            function fill() {
+                const pool = buildPool();
+                const used = new Set();
+                const items = [];
+                for (let i = 0; i < COUNT; i++) {
+                    let pick, tries = 0;
+                    do {
+                        pick = pool[Math.floor(Math.random() * pool.length)];
+                        tries++;
+                    } while (used.has(pick) && tries < 20);
+                    used.add(pick);
+                    items.push(pick);
                 }
-                left.appendChild(node);
-                queue.unshift(node);
-
-                while (queue.length > TOTAL_MAX) {
-                    const stale = queue.pop();
-                    stale.classList.add('fading');
-                    setTimeout(() => stale.remove(), 500);
-                }
-
-                reflow();
-                setTimeout(fire, TICK_MIN + Math.random() * (TICK_MAX - TICK_MIN));
+                const html = items.map(m => `<span>${escapeHtml(m)}</span>`).join('');
+                el.innerHTML = html + html;
+                const halfWidth = el.scrollWidth / 2;
+                el.style.animationDuration = (halfWidth / 60) + 's';
             }
-            setTimeout(fire, 800);
+
+            fill();
+            setInterval(fill, 30000);
         })();
 
         fetchStatus();
         setInterval(fetchStatus, 8000);
 
-        // ── RANDOM VIOLENT GLITCH BURSTS ON H1 ──────────────
         (function violentGlitch() {
             const h1 = document.querySelector('h1.glitch');
             if (!h1) return;
             function fire() {
                 h1.style.animation = 'violent-glitch 0.32s steps(2, end) 1, blink 0.85s step-end infinite';
-                setTimeout(() => {
-                    h1.style.animation = '';
-                }, 320);
+                setTimeout(() => { h1.style.animation = ''; }, 320);
                 setTimeout(fire, 6000 + Math.random() * 9000);
             }
             setTimeout(fire, 4000);
         })();
 
-        // ── PARALLAX BACKGROUND ─────────────────────────────
         (function parallax() {
             if (!window.matchMedia('(min-width: 800px)').matches) return;
             document.addEventListener('mousemove', (e) => {
@@ -1117,22 +1051,18 @@
         })();
 
         const glow = document.getElementById('cursorGlow');
-        let raf = null;
-        let tx = 0, ty = 0, cx = 0, cy = 0;
+        let raf = null; let tx = 0, ty = 0, cx = 0, cy = 0;
         document.addEventListener('mousemove', (e) => {
             tx = e.clientX; ty = e.clientY;
             glow.style.opacity = '1';
             if (!raf) raf = requestAnimationFrame(loop);
         });
         function loop() {
-            cx += (tx - cx) * 0.18;
-            cy += (ty - cy) * 0.18;
+            cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
             glow.style.transform = `translate(${cx - 250}px, ${cy - 250}px)`;
             if (Math.abs(tx - cx) > 0.4 || Math.abs(ty - cy) > 0.4) {
                 raf = requestAnimationFrame(loop);
-            } else {
-                raf = null;
-            }
+            } else { raf = null; }
         }
 
         const holo = document.querySelector('.hologram-container');
@@ -1153,13 +1083,8 @@
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === konami[kIdx].toLowerCase()) {
                 kIdx++;
-                if (kIdx === konami.length) {
-                    document.body.classList.toggle('konami');
-                    kIdx = 0;
-                }
-            } else {
-                kIdx = 0;
-            }
+                if (kIdx === konami.length) { document.body.classList.toggle('konami'); kIdx = 0; }
+            } else { kIdx = 0; }
         });
     </script>
 

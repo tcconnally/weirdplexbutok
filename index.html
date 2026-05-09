@@ -50,11 +50,13 @@
             10%  { opacity: 0.8; } 90% { opacity: 0.8; }
             100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
-        @keyframes stack-life {
-            0%   { opacity: 0; transform: translateX(20px); }
-            10%  { opacity: 1; transform: translateX(0); }
-            85%  { opacity: 1; }
-            100% { opacity: 0; transform: translateX(-12px); }
+        @keyframes line-in {
+            from { opacity: 0; transform: translateX(20px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes line-out {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-10px); }
         }
         @keyframes boot-bg {
             0%   { opacity: 1; } 85% { opacity: 1; }
@@ -314,12 +316,13 @@
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
-        /* ── ROLLING STAT STACKS (both bottom-right, side by side) ─ */
+        /* ── ROLLING STAT QUEUE — single stream rendered across two columns ─ */
         .sysmsg {
             position: fixed;
             bottom: 18px;
             font-family: var(--font-stack);
             font-weight: 700;
+            font-size: 1.18em;
             text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55);
             pointer-events: none;
             z-index: 5;
@@ -331,33 +334,10 @@
             color: var(--neon-green);
             text-align: right;
         }
-        .sysmsg .line {
-            opacity: 0;
-            transform-origin: right bottom;
-        }
-        /* Short stack — anchored at the corner, 6 lines, slow */
-        .sysmsg-short {
-            right: 22px;
-            font-size: 1.2em;
-            max-width: 26vw;
-        }
-        .sysmsg-short .line {
-            animation: stack-life 18s linear forwards;
-        }
-        .sysmsg-short .line:nth-last-child(n+3) { color: rgba(93, 255, 177, 0.7); }
-        .sysmsg-short .line:nth-last-child(n+5) { color: rgba(93, 255, 177, 0.4); }
-
-        /* Tall stack — stepped up next to the short one, fades into the bg toward the 666 */
-        .sysmsg-tall {
-            right: 26vw;
-            font-size: 1.05em;
-            max-width: 32vw;
-            mask-image: linear-gradient(0deg, black 0%, black 25%, transparent 95%);
-            -webkit-mask-image: linear-gradient(0deg, black 0%, black 25%, transparent 95%);
-        }
-        .sysmsg-tall .line {
-            animation: stack-life 26s linear forwards;
-        }
+        .sysmsg-right { right: 22px;  max-width: 26vw; }
+        .sysmsg-left  { right: 27vw;  max-width: 30vw; }
+        .sysmsg .line { animation: line-in 0.55s ease-out forwards; }
+        .sysmsg .line.fading { animation: line-out 0.45s ease-in forwards; }
 
         .boot {
             position: fixed; inset: 0; z-index: 5000;
@@ -456,9 +436,9 @@
             .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
-            .sysmsg { bottom: 10px; }
-            .sysmsg-short { right: 8px; font-size: 0.95em; max-width: 70vw; }
-            .sysmsg-tall  { display: none; }
+            .sysmsg { bottom: 10px; font-size: 0.95em; }
+            .sysmsg-right { right: 8px; max-width: 70vw; }
+            .sysmsg-left  { display: none; }
             .live-ops { grid-template-columns: repeat(2, 1fr); }
             .op-value { font-size: 1.5em; }
         }
@@ -476,8 +456,8 @@
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
-    <div class="sysmsg sysmsg-tall" id="sysmsgTall"></div>
-    <div class="sysmsg sysmsg-short" id="sysmsgShort"></div>
+    <div class="sysmsg sysmsg-left" id="sysmsgLeft"></div>
+    <div class="sysmsg sysmsg-right" id="sysmsgRight"></div>
 
     <div class="main-wrapper">
         <header>
@@ -753,46 +733,65 @@
             }
         }
 
-        // mountStack: rolling line container with dedup. Per-stack maxVisible/lifeMs override.
-        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 6, lifeMs = 18000 }) {
-            if (!el) return;
+        // ── ROLLING STAT QUEUE ──────────────────────────────
+        // Single stream rendered across two columns:
+        //   newest at bottom-right -> flows up the right column (7 slots)
+        //   continues at bottom of left column (13 slots) -> flows up
+        //   disappears off the top of left after 20 total
+        (function rollingQueue() {
+            const right = document.getElementById('sysmsgRight');
+            const left  = document.getElementById('sysmsgLeft');
+            if (!right || !left) return;
+
+            const RIGHT_MAX = 7;
+            const TOTAL_MAX = 20;
+            const TICK_MIN = 1800;
+            const TICK_MAX = 2400;
+            const RECENT_DEPTH = 6;
+
+            const queue = [];
             const recent = [];
-            const RECENT_DEPTH = 5;
+
             function pickMsg() {
-                const live = gregStatus.data ? buildLive(gregStatus.data) : [];
+                const sys  = gregStatus.data ? buildSysMsgs(gregStatus.data) : [];
+                const med  = gregStatus.data ? buildMediaMsgs(gregStatus.data) : [];
+                const live = sys.concat(med);
+                const faux = FAUX_SYS.concat(FAUX_MEDIA);
                 const pool = (live.length >= 3 ? live.concat(faux) : faux.concat(live));
                 let pick, tries = 0;
                 do {
                     pick = pool[Math.floor(Math.random() * pool.length)];
                     tries++;
-                } while (recent.includes(pick) && tries < 8);
+                } while (recent.includes(pick) && tries < 10);
                 recent.push(pick);
                 while (recent.length > RECENT_DEPTH) recent.shift();
                 return pick;
             }
-            function fire() {
-                const line = document.createElement('div');
-                line.className = 'line';
-                line.textContent = pickMsg();
-                el.appendChild(line);
-                while (el.children.length > maxVisible) el.firstChild.remove();
-                setTimeout(() => line.remove(), lifeMs);
-                setTimeout(fire, tickMin + Math.random() * (tickMax - tickMin));
+
+            function reflow() {
+                const split = Math.max(0, queue.length - RIGHT_MAX);
+                for (let i = 0; i < split; i++) left.appendChild(queue[i]);
+                for (let i = split; i < queue.length; i++) right.appendChild(queue[i]);
             }
-            setTimeout(fire, startDelay);
-        }
-        mountStack({
-            el: document.getElementById('sysmsgShort'),
-            faux: FAUX_MEDIA, buildLive: buildMediaMsgs,
-            tickMin: 2600, tickMax: 3300, startDelay: 1200,
-            maxVisible: 6, lifeMs: 18000
-        });
-        mountStack({
-            el: document.getElementById('sysmsgTall'),
-            faux: FAUX_SYS.concat(FAUX_MEDIA), buildLive: (d) => buildSysMsgs(d).concat(buildMediaMsgs(d)),
-            tickMin: 1800, tickMax: 2400, startDelay: 800,
-            maxVisible: 10, lifeMs: 26000
-        });
+
+            function fire() {
+                const node = document.createElement('div');
+                node.className = 'line';
+                node.textContent = pickMsg();
+                right.appendChild(node);
+                queue.push(node);
+
+                while (queue.length > TOTAL_MAX) {
+                    const stale = queue.shift();
+                    stale.classList.add('fading');
+                    setTimeout(() => stale.remove(), 500);
+                }
+
+                reflow();
+                setTimeout(fire, TICK_MIN + Math.random() * (TICK_MAX - TICK_MIN));
+            }
+            setTimeout(fire, 800);
+        })();
 
         fetchStatus();
         setInterval(fetchStatus, 8000);

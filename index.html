@@ -52,14 +52,14 @@
         }
         @keyframes stack-life-right {
             0%   { opacity: 0; transform: translateX(20px); }
-            7%   { opacity: 1; transform: translateX(0); }
-            85%  { opacity: 1; }
+            12%  { opacity: 1; transform: translateX(0); }
+            80%  { opacity: 1; }
             100% { opacity: 0; transform: translateX(-12px); }
         }
         @keyframes stack-life-left {
             0%   { opacity: 0; transform: translateX(-20px); }
-            7%   { opacity: 1; transform: translateX(0); }
-            85%  { opacity: 1; }
+            12%  { opacity: 1; transform: translateX(0); }
+            80%  { opacity: 1; }
             100% { opacity: 0; transform: translateX(12px); }
         }
         @keyframes boot-bg {
@@ -341,10 +341,10 @@
         .sysmsg-left  { left: 22px;  text-align: left;  }
         .sysmsg-right { right: 22px; text-align: right; }
         .sysmsg .line { opacity: 0; }
-        .sysmsg-left  .line { transform-origin: left bottom;  animation: stack-life-left 17s linear forwards; }
-        .sysmsg-right .line { transform-origin: right bottom; animation: stack-life-right 17s linear forwards; }
-        .sysmsg .line:nth-last-child(n+4) { color: rgba(93, 255, 177, 0.7); }
-        .sysmsg .line:nth-last-child(n+6) { color: rgba(93, 255, 177, 0.4); }
+        .sysmsg-left  .line { transform-origin: left bottom;  animation: stack-life-left 8.5s linear forwards; }
+        .sysmsg-right .line { transform-origin: right bottom; animation: stack-life-right 8.5s linear forwards; }
+        .sysmsg .line:nth-last-child(n+2) { color: rgba(93, 255, 177, 0.7); }
+        .sysmsg .line:nth-last-child(n+3) { color: rgba(93, 255, 177, 0.4); }
 
         .boot {
             position: fixed; inset: 0; z-index: 5000;
@@ -742,8 +742,8 @@
             }
         }
 
-        // Each stack: max 6 visible, ~2.1s tick, 17s lifetime, 4-deep dedup.
-        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 6, lifeMs = 17000 }) {
+        // Each stack: max 3 visible, ~2.1s tick, 8.5s lifetime, 4-deep dedup.
+        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 3, lifeMs = 8500 }) {
             if (!el) return;
             const recent = [];
             const RECENT_DEPTH = 4;

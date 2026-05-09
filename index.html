@@ -25,13 +25,9 @@
             --bg-overlay: rgba(8, 4, 18, 0.78);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            41.99% { opacity: 1; } 42% { opacity: 0; } 43% { opacity: 1; }
+            0%, 100% { opacity: 1; } 41.99% { opacity: 1; } 42% { opacity: 0; } 43% { opacity: 1; }
             47.99% { opacity: 1; } 48% { opacity: 0; } 49% { opacity: 1; }
         }
         @keyframes pulseDot {
@@ -47,29 +43,21 @@
             30%      { clip-path: inset(40% 0 40% 0); transform: translate(-1px, 0); }
             40%      { clip-path: inset(0 0 0 0);     transform: translate(0); }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50%      { transform: translateY(-3px); }
-        }
-        @keyframes shimmer {
-            0%   { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes particle-drift {
             0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10%  { opacity: 0.8; }
-            90%  { opacity: 0.8; }
+            10%  { opacity: 0.8; } 90% { opacity: 0.8; }
             100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
-        @keyframes msg-in {
+        @keyframes stack-life {
             0%   { opacity: 0; transform: translateX(20px); }
-            10%  { opacity: 1; transform: translateX(0); }
-            90%  { opacity: 1; transform: translateX(0); }
-            100% { opacity: 0; transform: translateX(-20px); }
+            6%   { opacity: 1; transform: translateX(0); }
+            85%  { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-12px); }
         }
         @keyframes boot-bg {
-            0%   { opacity: 1; }
-            85%  { opacity: 1; }
+            0%   { opacity: 1; } 85% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
         @keyframes violent-glitch {
@@ -78,6 +66,15 @@
             40%      { transform: translate(3px, -2px); filter: hue-rotate(-60deg) saturate(2); }
             60%      { transform: translate(-2px, 2px); filter: hue-rotate(180deg); }
             80%      { transform: translate(2px, 0); filter: none; }
+        }
+        @keyframes valueFlash {
+            0%   { background: rgba(6, 227, 255, 0); }
+            30%  { background: rgba(6, 227, 255, 0.18); }
+            100% { background: rgba(6, 227, 255, 0); }
+        }
+        @keyframes hueShift {
+            from { filter: hue-rotate(0deg) saturate(1.2); }
+            to   { filter: hue-rotate(360deg) saturate(1.2); }
         }
 
         * { box-sizing: border-box; }
@@ -163,12 +160,12 @@
 
         .status {
             display: inline-flex; align-items: center; gap: 8px;
-            font-size: 0.95em; color: var(--neon-green);
+            font-size: 1.05em; color: var(--neon-green);
             text-shadow: 0 0 6px var(--neon-green);
             opacity: 0; animation: fadeIn 1.2s ease-out 1.8s forwards;
         }
         .status-dot {
-            display: inline-block; width: 9px; height: 9px;
+            display: inline-block; width: 11px; height: 11px;
             border-radius: 50%; background: var(--neon-green);
             animation: pulseDot 1.6s ease-in-out infinite;
         }
@@ -267,6 +264,52 @@
             text-shadow: none; animation: none;
         }
 
+        /* ── LIVE OPS TILES ─────────────────────────────────── */
+        .live-ops {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 22px 0 6px;
+        }
+        .op-tile {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(6, 227, 255, 0.45);
+            padding: 12px 8px 10px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .op-tile:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 18px rgba(6, 227, 255, 0.45);
+        }
+        .op-tile.warn { border-color: var(--neon-yellow); }
+        .op-tile.warn .op-value { color: var(--neon-yellow); text-shadow: 0 0 12px var(--neon-yellow); }
+        .op-tile.alert { border-color: var(--neon-pink); }
+        .op-tile.alert .op-value { color: var(--neon-pink); text-shadow: 0 0 14px var(--neon-pink); }
+        .op-value {
+            font-family: var(--font-display);
+            font-size: 1.85em; line-height: 1;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 4px;
+            transition: color 0.25s ease, text-shadow 0.25s ease;
+        }
+        .op-value .unit {
+            font-size: 0.55em; opacity: 0.7;
+            margin-left: 2px; letter-spacing: 0.05em;
+        }
+        .op-label {
+            font-family: var(--font-stack);
+            font-size: 0.7em; letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(161, 255, 255, 0.55);
+            text-shadow: none;
+        }
+        .op-tile.flash { animation: valueFlash 0.6s ease-out; }
+
         .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .particle {
             position: absolute; width: 2px; height: 2px;
@@ -276,14 +319,34 @@
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
+        /* ── SYSMSG ROLLING STACK ───────────────────────────── */
         .sysmsg {
-            position: fixed; bottom: 16px; right: 18px;
-            font-family: var(--font-stack); font-size: 0.78em;
-            color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green);
-            opacity: 0.8; pointer-events: none; z-index: 5;
-            text-align: right; min-height: 1.2em; white-space: nowrap;
+            position: fixed;
+            bottom: 18px;
+            right: 22px;
+            font-family: var(--font-stack);
+            font-size: 1.25em;
+            font-weight: 700;
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55), 0 0 28px rgba(93, 255, 177, 0.25);
+            pointer-events: none;
+            z-index: 5;
+            text-align: right;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-width: 38vw;
+            letter-spacing: 0.04em;
         }
-        .sysmsg .line { animation: msg-in 4s ease-in-out forwards; }
+        .sysmsg .line {
+            opacity: 0;
+            animation: stack-life 18s linear forwards;
+            transform-origin: right bottom;
+        }
+        .sysmsg .line:nth-last-child(1) { opacity: 1; }
+        .sysmsg .line:nth-last-child(n+5) { color: rgba(93, 255, 177, 0.75); }
+        .sysmsg .line:nth-last-child(n+8) { color: rgba(93, 255, 177, 0.45); }
 
         .boot {
             position: fixed; inset: 0; z-index: 5000;
@@ -375,10 +438,6 @@
         }
 
         body.konami { animation: hueShift 6s linear infinite; }
-        @keyframes hueShift {
-            from { filter: hue-rotate(0deg) saturate(1.2); }
-            to   { filter: hue-rotate(360deg) saturate(1.2); }
-        }
 
         @media (max-width: 800px) {
             body { justify-content: center; background-position: 78% center; }
@@ -386,7 +445,9 @@
             .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
-            .sysmsg { font-size: 0.7em; right: 10px; bottom: 10px; }
+            .sysmsg { font-size: 0.95em; right: 10px; bottom: 10px; max-width: 70vw; }
+            .live-ops { grid-template-columns: repeat(2, 1fr); }
+            .op-value { font-size: 1.5em; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -432,6 +493,25 @@
                     <a href="https://www.amazon.com/hz/wishlist/ls/2ZIX2XZ72O4YZ?ref_=wl_share" class="button support-btn" target="_blank" rel="noopener noreferrer">upgrades</a>
                 </div>
             </section>
+
+            <div class="live-ops" id="liveOps">
+                <div class="op-tile" id="opStreamsTile">
+                    <div class="op-value" id="opStreams">—</div>
+                    <div class="op-label">streams</div>
+                </div>
+                <div class="op-tile" id="opCpuTile">
+                    <div class="op-value" id="opCpu">—</div>
+                    <div class="op-label">cpu</div>
+                </div>
+                <div class="op-tile" id="opArrayTile">
+                    <div class="op-value" id="opArray">—</div>
+                    <div class="op-label">free</div>
+                </div>
+                <div class="op-tile" id="opUptimeTile">
+                    <div class="op-value" id="opUptime">—</div>
+                    <div class="op-label">uptime</div>
+                </div>
+            </div>
 
             <div class="now-watching" id="nowWatching">
                 <div class="nw-label">now watching_</div>
@@ -537,7 +617,26 @@
             '[scan] :: 0 anomalies',
             '[backup] :: zerobyte ok',
             '[ntfy] :: 0 pending',
-            '[greg] :: vibing'
+            '[greg] :: vibing',
+            '[qsv] :: idle',
+            '[plex] :: heartbeat',
+            '[sonarr] :: rss fetched',
+            '[radarr] :: queue clear',
+            '[bazarr] :: subs synced',
+            '[prowlarr] :: indexers green',
+            '[seerr] :: ready',
+            '[homepage] :: serving',
+            '[uk] :: monitors green',
+            '[parity] :: in sync',
+            '[fans] :: nominal',
+            '[temp] :: nominal',
+            '[ram] :: healthy',
+            '[gpu] :: idle',
+            '[cron] :: greg-purgr armed',
+            '[greg] :: holding',
+            '[greg] :: still here',
+            '[plex] :: streaming',
+            '[greg] :: cosmic'
         ];
         function buildLiveMsgs(d) {
             const m = [];
@@ -581,6 +680,30 @@
             return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
+        function formatUptime(s) {
+            const dd = Math.floor(s / 86400);
+            const hh = Math.floor((s % 86400) / 3600);
+            return dd > 0 ? `${dd}d` : `${hh}h`;
+        }
+
+        function setOp(id, value, unit, classifier) {
+            const el = document.getElementById(id);
+            const tile = el && el.closest('.op-tile');
+            if (!el || !tile) return;
+            if (value == null) { el.textContent = '—'; tile.className = 'op-tile'; return; }
+            const v = (typeof value === 'number') ? value : parseFloat(value);
+            const display = String(value);
+            const next = display + (unit ? `<span class="unit">${unit}</span>` : '');
+            if (el.dataset.last !== next) {
+                el.innerHTML = next;
+                el.dataset.last = next;
+                tile.classList.remove('flash'); void tile.offsetWidth; tile.classList.add('flash');
+            }
+            tile.classList.remove('warn', 'alert');
+            const cls = classifier ? classifier(v) : null;
+            if (cls) tile.classList.add(cls);
+        }
+
         function applyStatus() {
             const dot = document.querySelector('.status-dot');
             const label = document.querySelector('.status span:last-child');
@@ -603,22 +726,42 @@
                 nwT.innerHTML = '<span>[silence]</span>';
                 nw.classList.remove('live'); nw.classList.add('silent');
             }
+
+            if (d) {
+                setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
+                setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
+                setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
+                setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
+            }
         }
 
+        // Sysmsg rolling stack: keeps ~10 lines visible, newest at the bottom
         (function sysmsg() {
             const el = document.getElementById('sysmsg');
             if (!el) return;
-            function fire() {
+            const MAX_VISIBLE = 10;
+            const MSG_LIFE_MS = 18000;
+            let lastMsg = '';
+            function pickMsg() {
                 const live = gregStatus.data ? buildLiveMsgs(gregStatus.data) : null;
                 const pool = (live && live.length) ? live : FAUX_MSGS;
+                let pick = pool[Math.floor(Math.random() * pool.length)];
+                if (pool.length > 1 && pick === lastMsg) {
+                    pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+                }
+                lastMsg = pick;
+                return pick;
+            }
+            function fire() {
                 const line = document.createElement('div');
                 line.className = 'line';
-                line.textContent = pool[Math.floor(Math.random() * pool.length)];
+                line.textContent = pickMsg();
                 el.appendChild(line);
-                setTimeout(() => line.remove(), 4200);
-                setTimeout(fire, 1800 + Math.random() * 2200);
+                while (el.children.length > MAX_VISIBLE) el.firstChild.remove();
+                setTimeout(() => line.remove(), MSG_LIFE_MS);
+                setTimeout(fire, 1100 + Math.random() * 700);
             }
-            setTimeout(fire, 1800);
+            setTimeout(fire, 1200);
         })();
 
         fetchStatus();

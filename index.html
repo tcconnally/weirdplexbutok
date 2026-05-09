@@ -50,17 +50,11 @@
             10%  { opacity: 0.8; } 90% { opacity: 0.8; }
             100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
-        @keyframes stack-life-right {
+        @keyframes stack-life {
             0%   { opacity: 0; transform: translateX(20px); }
-            12%  { opacity: 1; transform: translateX(0); }
-            80%  { opacity: 1; }
+            10%  { opacity: 1; transform: translateX(0); }
+            85%  { opacity: 1; }
             100% { opacity: 0; transform: translateX(-12px); }
-        }
-        @keyframes stack-life-left {
-            0%   { opacity: 0; transform: translateX(-20px); }
-            12%  { opacity: 1; transform: translateX(0); }
-            80%  { opacity: 1; }
-            100% { opacity: 0; transform: translateX(12px); }
         }
         @keyframes boot-bg {
             0%   { opacity: 1; } 85% { opacity: 1; }
@@ -320,12 +314,11 @@
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
-        /* ── ROLLING STAT STACKS (left=system, right=media) ─ */
+        /* ── ROLLING STAT STACKS (both bottom-right, side by side) ─ */
         .sysmsg {
             position: fixed;
             bottom: 18px;
             font-family: var(--font-stack);
-            font-size: 1.2em;
             font-weight: 700;
             text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55);
             pointer-events: none;
@@ -334,17 +327,37 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            max-width: 32vw;
             letter-spacing: 0.04em;
             color: var(--neon-green);
+            text-align: right;
         }
-        .sysmsg-left  { left: 22px;  text-align: left;  }
-        .sysmsg-right { right: 22px; text-align: right; }
-        .sysmsg .line { opacity: 0; }
-        .sysmsg-left  .line { transform-origin: left bottom;  animation: stack-life-left 8.5s linear forwards; }
-        .sysmsg-right .line { transform-origin: right bottom; animation: stack-life-right 8.5s linear forwards; }
-        .sysmsg .line:nth-last-child(n+2) { color: rgba(93, 255, 177, 0.7); }
-        .sysmsg .line:nth-last-child(n+3) { color: rgba(93, 255, 177, 0.4); }
+        .sysmsg .line {
+            opacity: 0;
+            transform-origin: right bottom;
+        }
+        /* Short stack — anchored at the corner, 6 lines, slow */
+        .sysmsg-short {
+            right: 22px;
+            font-size: 1.2em;
+            max-width: 26vw;
+        }
+        .sysmsg-short .line {
+            animation: stack-life 18s linear forwards;
+        }
+        .sysmsg-short .line:nth-last-child(n+3) { color: rgba(93, 255, 177, 0.7); }
+        .sysmsg-short .line:nth-last-child(n+5) { color: rgba(93, 255, 177, 0.4); }
+
+        /* Tall stack — stepped up next to the short one, fades into the bg toward the 666 */
+        .sysmsg-tall {
+            right: 26vw;
+            font-size: 1.05em;
+            max-width: 32vw;
+            mask-image: linear-gradient(0deg, black 0%, black 25%, transparent 95%);
+            -webkit-mask-image: linear-gradient(0deg, black 0%, black 25%, transparent 95%);
+        }
+        .sysmsg-tall .line {
+            animation: stack-life 26s linear forwards;
+        }
 
         .boot {
             position: fixed; inset: 0; z-index: 5000;
@@ -443,9 +456,9 @@
             .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
-            .sysmsg { font-size: 0.85em; bottom: 10px; max-width: 48vw; }
-            .sysmsg-left { left: 8px; }
-            .sysmsg-right { right: 8px; }
+            .sysmsg { bottom: 10px; }
+            .sysmsg-short { right: 8px; font-size: 0.95em; max-width: 70vw; }
+            .sysmsg-tall  { display: none; }
             .live-ops { grid-template-columns: repeat(2, 1fr); }
             .op-value { font-size: 1.5em; }
         }
@@ -463,8 +476,8 @@
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
-    <div class="sysmsg sysmsg-left" id="sysmsgLeft"></div>
-    <div class="sysmsg sysmsg-right" id="sysmsgRight"></div>
+    <div class="sysmsg sysmsg-tall" id="sysmsgTall"></div>
+    <div class="sysmsg sysmsg-short" id="sysmsgShort"></div>
 
     <div class="main-wrapper">
         <header>
@@ -608,10 +621,8 @@
             }
         })();
 
-        // Live status
         const gregStatus = { data: null, lastOk: 0 };
 
-        // Two pools: SYSTEM (left stack) + MEDIA (right stack). No string lives in both.
         const FAUX_SYS = [
             '[kernel] :: 6.6.55 stable', '[parity] :: in sync', '[fans] :: nominal',
             '[temp] :: nominal', '[ram] :: healthy', '[gpu] :: idle', '[qsv] :: idle',
@@ -742,11 +753,11 @@
             }
         }
 
-        // Each stack: max 3 visible, ~2.1s tick, 8.5s lifetime, 4-deep dedup.
-        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 3, lifeMs = 8500 }) {
+        // mountStack: rolling line container with dedup. Per-stack maxVisible/lifeMs override.
+        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 6, lifeMs = 18000 }) {
             if (!el) return;
             const recent = [];
-            const RECENT_DEPTH = 4;
+            const RECENT_DEPTH = 5;
             function pickMsg() {
                 const live = gregStatus.data ? buildLive(gregStatus.data) : [];
                 const pool = (live.length >= 3 ? live.concat(faux) : faux.concat(live));
@@ -771,14 +782,16 @@
             setTimeout(fire, startDelay);
         }
         mountStack({
-            el: document.getElementById('sysmsgLeft'),
-            faux: FAUX_SYS, buildLive: buildSysMsgs,
-            tickMin: 1900, tickMax: 2600, startDelay: 1200
+            el: document.getElementById('sysmsgShort'),
+            faux: FAUX_MEDIA, buildLive: buildMediaMsgs,
+            tickMin: 2600, tickMax: 3300, startDelay: 1200,
+            maxVisible: 6, lifeMs: 18000
         });
         mountStack({
-            el: document.getElementById('sysmsgRight'),
-            faux: FAUX_MEDIA, buildLive: buildMediaMsgs,
-            tickMin: 2000, tickMax: 2700, startDelay: 1900
+            el: document.getElementById('sysmsgTall'),
+            faux: FAUX_SYS.concat(FAUX_MEDIA), buildLive: (d) => buildSysMsgs(d).concat(buildMediaMsgs(d)),
+            tickMin: 1800, tickMax: 2400, startDelay: 800,
+            maxVisible: 10, lifeMs: 26000
         });
 
         fetchStatus();

@@ -25,35 +25,21 @@
             --bg-overlay: rgba(8, 4, 18, 0.78);
         }
 
-        /* ── ANIMATIONS ───────────────────────────────────────── */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes flicker {
             0%, 100% { opacity: 1; }
-            41.99% { opacity: 1; }
-            42% { opacity: 0; }
-            43% { opacity: 1; }
-            47.99% { opacity: 1; }
-            48% { opacity: 0; }
-            49% { opacity: 1; }
-        }
-        @keyframes scanmove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100vh; }
+            41.99% { opacity: 1; } 42% { opacity: 0; } 43% { opacity: 1; }
+            47.99% { opacity: 1; } 48% { opacity: 0; } 49% { opacity: 1; }
         }
         @keyframes pulseDot {
             0%, 100% { box-shadow: 0 0 4px var(--neon-green), 0 0 12px var(--neon-green); }
             50%      { box-shadow: 0 0 8px var(--neon-green), 0 0 24px var(--neon-green); transform: scale(1.15); }
         }
-        @keyframes typewriter {
-            from { width: 0; }
-            to   { width: 11ch; }
-        }
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+        @keyframes typewriter { from { width: 0; } to { width: 11ch; } }
+        @keyframes blink { 50% { opacity: 0; } }
         @keyframes glitch-slice {
             0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
             10%      { clip-path: inset(20% 0 65% 0); transform: translate(-2px, 1px); }
@@ -94,7 +80,6 @@
             80%      { transform: translate(2px, 0); filter: none; }
         }
 
-        /* ── BASE ─────────────────────────────────────────────── */
         * { box-sizing: border-box; }
         html { min-height: 100%; }
         body {
@@ -111,96 +96,49 @@
             justify-content: flex-start;
             align-items: flex-start;
             color: var(--light-cyan);
-            cursor: crosshair;
             position: relative;
             overflow-x: hidden;
         }
+        a, button, .button, .older-toggle { cursor: crosshair; }
 
-        /* ── CRT SCANLINES (full-page overlay) ───────────────── */
         body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1000;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.18) 0px,
-                rgba(0, 0, 0, 0.18) 1px,
-                transparent 1px,
-                transparent 3px
-            );
+            content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1000;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
             mix-blend-mode: multiply;
         }
-
-        /* ── CRT VIGNETTE ─────────────────────────────────────── */
         body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 999;
+            content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999;
             background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
         }
 
-        /* (synthetic grid floor removed — background image owns the grid now) */
-
-        /* ── MOUSE-FOLLOW GLOW ────────────────────────────────── */
         .cursor-glow {
-            position: fixed;
-            top: 0; left: 0;
-            width: 500px;
-            height: 500px;
-            pointer-events: none;
-            z-index: 1;
+            position: fixed; top: 0; left: 0; width: 500px; height: 500px;
+            pointer-events: none; z-index: 1;
             background: radial-gradient(circle, rgba(255, 43, 214, 0.18) 0%, transparent 60%);
-            transform: translate(-50%, -50%);
-            transition: opacity 200ms ease;
-            opacity: 0;
-            mix-blend-mode: screen;
+            transform: translate(-50%, -50%); transition: opacity 200ms ease;
+            opacity: 0; mix-blend-mode: screen;
         }
         body:hover .cursor-glow { opacity: 1; }
 
-        /* ── LAYOUT ───────────────────────────────────────────── */
         .main-wrapper {
-            width: 90%;
-            max-width: 520px;
-            margin-left: 6%;
-            margin-top: 12vh;
-            margin-bottom: 12vh;
-            z-index: 2;
-            position: relative;
+            width: 90%; max-width: 520px;
+            margin-left: 6%; margin-top: 12vh; margin-bottom: 12vh;
+            z-index: 2; position: relative;
         }
 
-        /* ── HEADER ───────────────────────────────────────────── */
         header {
-            text-align: left;
-            margin-bottom: 22px;
+            text-align: left; margin-bottom: 22px;
             animation: fadeIn 1.4s ease-out;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            display: flex; flex-direction: column; gap: 10px;
         }
-        .h1-wrap {
-            position: relative;
-            display: inline-block;
-        }
+        .h1-wrap { position: relative; display: inline-block; }
         h1 {
             font-family: var(--font-display);
-            font-size: 3.6em;
-            margin: 0;
-            color: #fff;
-            line-height: 1;
-            letter-spacing: 0.02em;
-            text-shadow:
-                0 0 5px #fff,
-                0 0 14px var(--neon-pink),
-                0 0 26px var(--neon-pink);
-            animation: flicker 6s linear infinite;
-            position: relative;
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
+            font-size: 3.6em; margin: 0; color: #fff;
+            line-height: 1; letter-spacing: 0.02em;
+            text-shadow: 0 0 5px #fff, 0 0 14px var(--neon-pink), 0 0 26px var(--neon-pink);
+            position: relative; display: inline-block;
+            white-space: nowrap; overflow: hidden;
             border-right: 3px solid var(--neon-pink);
             width: 11ch;
             animation:
@@ -208,209 +146,114 @@
                 blink 0.85s step-end infinite,
                 flicker 6s linear 1.6s infinite;
         }
-
-        /* ── GLITCH (RGB-split slices behind h1) ──────────────── */
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            overflow: hidden;
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%;
+            overflow: hidden; font-family: inherit; font-size: inherit; line-height: inherit;
         }
         .glitch::before {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 6px var(--neon-cyan);
+            color: var(--neon-cyan); text-shadow: 0 0 6px var(--neon-cyan);
             animation: glitch-slice 4s infinite linear alternate;
-            mix-blend-mode: screen;
-            opacity: 0.8;
+            mix-blend-mode: screen; opacity: 0.8;
         }
         .glitch::after {
-            color: var(--neon-yellow);
-            text-shadow: 0 0 6px var(--neon-yellow);
+            color: var(--neon-yellow); text-shadow: 0 0 6px var(--neon-yellow);
             animation: glitch-slice 4s infinite linear alternate-reverse;
-            animation-delay: 0.4s;
-            mix-blend-mode: screen;
-            opacity: 0.6;
+            animation-delay: 0.4s; mix-blend-mode: screen; opacity: 0.6;
         }
 
-        /* ── STATUS DOT ───────────────────────────────────────── */
         .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95em;
-            color: var(--neon-green);
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.95em; color: var(--neon-green);
             text-shadow: 0 0 6px var(--neon-green);
-            opacity: 0;
-            animation: fadeIn 1.2s ease-out 1.8s forwards;
+            opacity: 0; animation: fadeIn 1.2s ease-out 1.8s forwards;
         }
         .status-dot {
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--neon-green);
+            display: inline-block; width: 9px; height: 9px;
+            border-radius: 50%; background: var(--neon-green);
             animation: pulseDot 1.6s ease-in-out infinite;
         }
 
-        /* ── HOLOGRAPHIC PROJECTOR ────────────────────────────── */
         .hologram-container {
             background: var(--bg-overlay);
             border: 1px solid var(--neon-pink);
-            box-shadow:
-                0 0 24px rgba(255, 43, 214, 0.25),
-                inset 0 0 30px rgba(6, 227, 255, 0.04);
+            box-shadow: 0 0 24px rgba(255, 43, 214, 0.25), inset 0 0 30px rgba(6, 227, 255, 0.04);
             padding: 30px;
             color: var(--light-cyan);
             text-shadow: 0 0 3px var(--light-cyan), 0 0 8px var(--neon-pink);
-            animation: fadeIn 1.6s ease-out 0.4s;
-            animation-fill-mode: backwards;
-            border-radius: 4px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 200ms ease-out;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            animation: fadeIn 1.6s ease-out 0.4s; animation-fill-mode: backwards;
+            border-radius: 4px; position: relative;
+            transform-style: preserve-3d; transition: transform 200ms ease-out;
+            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
         }
         .hologram-container::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
             background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
             animation: float 3s ease-in-out infinite;
         }
         .hologram-container::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 4px;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(6, 227, 255, 0.025) 0px,
-                rgba(6, 227, 255, 0.025) 1px,
-                transparent 1px,
-                transparent 4px
-            );
+            content: ""; position: absolute; inset: 0; border-radius: 4px;
+            background: repeating-linear-gradient(0deg, rgba(6, 227, 255, 0.025) 0px, rgba(6, 227, 255, 0.025) 1px, transparent 1px, transparent 4px);
             pointer-events: none;
         }
 
-        /* ── TYPOGRAPHY & CONTENT ─────────────────────────────── */
         h2 {
-            font-family: var(--font-display);
-            font-size: 1.6em;
-            margin: 0 0 18px 0;
-            color: var(--neon-pink);
-            font-weight: normal;
-            letter-spacing: 0.04em;
+            font-family: var(--font-display); font-size: 1.6em;
+            margin: 0 0 18px 0; color: var(--neon-pink);
+            font-weight: normal; letter-spacing: 0.04em;
             border-bottom: 1px solid rgba(255, 43, 214, 0.35);
-            padding-bottom: 6px;
-            display: inline-block;
+            padding-bottom: 6px; display: inline-block;
         }
-        p {
-            font-size: 0.95em;
-            line-height: 1.65;
-            margin-bottom: 14px;
-        }
-        a {
-            color: var(--neon-pink);
-            text-decoration: none;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-        a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
+        p { font-size: 0.95em; line-height: 1.65; margin-bottom: 14px; }
+        a { color: var(--neon-pink); text-decoration: none; transition: color 0.3s, text-shadow 0.3s; }
+        a:hover { color: #fff; text-shadow: 0 0 10px var(--neon-pink); }
         hr {
-            border: 0;
-            height: 1px;
+            border: 0; height: 1px;
             background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
             box-shadow: 0 0 10px var(--glow-color);
-            margin: 30px 0 28px;
-            opacity: 0.55;
+            margin: 30px 0 28px; opacity: 0.55;
         }
 
-        /* ── BUTTON GRID ──────────────────────────────────────── */
-        .links {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-        }
-        .support {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-            margin-top: 14px;
-        }
+        .links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+        .support { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; margin-top: 14px; }
         .support-label {
-            font-family: var(--font-display);
-            font-size: 1em;
-            color: var(--neon-gold);
-            letter-spacing: 0.18em;
+            font-family: var(--font-display); font-size: 1em;
+            color: var(--neon-gold); letter-spacing: 0.18em;
             text-shadow: 0 0 6px var(--neon-gold);
             margin: 18px 0 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
         }
         .support-label::after {
-            content: "";
-            flex: 1;
-            height: 1px;
+            content: ""; flex: 1; height: 1px;
             background: linear-gradient(90deg, var(--neon-gold), transparent);
         }
         .button {
             background: rgba(0, 0, 0, 0.45);
             border: 1px solid var(--neon-pink);
-            color: var(--light-cyan);
-            padding: 12px 5px;
-            font-family: var(--font-stack);
-            font-weight: normal;
+            color: var(--light-cyan); padding: 12px 5px;
+            font-family: var(--font-stack); font-weight: normal;
             text-shadow: 0 0 3px var(--light-cyan);
-            cursor: crosshair;
-            transition: all 0.18s ease;
-            text-align: center;
-            font-size: 0.95em;
-            display: block;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.04em;
+            transition: all 0.18s ease; text-align: center;
+            font-size: 0.95em; display: block;
+            position: relative; overflow: hidden; letter-spacing: 0.04em;
         }
         .button::before {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%;
+            content: ""; position: absolute; top: 0; left: -100%;
             width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
             transition: left 0.5s ease;
         }
         .button:hover::before { left: 100%; }
         .button:hover {
-            color: #000;
-            background: var(--neon-pink);
+            color: #000; background: var(--neon-pink);
             box-shadow: 0 0 20px var(--neon-pink), inset 0 0 10px rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-            text-shadow: none;
+            transform: translateY(-2px); text-shadow: none;
         }
-
-        /* ── SUPPORT BUTTONS (gold accent, slightly louder) ──── */
         .button.support-btn {
-            border-color: var(--neon-gold);
-            color: var(--neon-gold);
+            border-color: var(--neon-gold); color: var(--neon-gold);
             text-shadow: 0 0 4px var(--neon-gold);
-            font-size: 1.05em;
-            padding: 14px 5px;
+            font-size: 1.05em; padding: 14px 5px;
             background:
-                linear-gradient(90deg,
-                    transparent 0%,
-                    rgba(255, 184, 0, 0.18) 50%,
-                    transparent 100%) repeat,
+                linear-gradient(90deg, transparent 0%, rgba(255, 184, 0, 0.18) 50%, transparent 100%) repeat,
                 rgba(0, 0, 0, 0.5);
             background-size: 200% 100%, 100% 100%;
             animation: shimmer 3.5s linear infinite;
@@ -419,132 +262,131 @@
             background: linear-gradient(90deg, transparent, rgba(255, 184, 0, 0.35), transparent);
         }
         .button.support-btn:hover {
-            background: var(--neon-gold);
-            color: #000;
-            box-shadow:
-                0 0 24px var(--neon-gold),
-                0 0 48px rgba(255, 184, 0, 0.4),
-                inset 0 0 10px rgba(255, 255, 255, 0.3);
-            text-shadow: none;
-            animation: none;
+            background: var(--neon-gold); color: #000;
+            box-shadow: 0 0 24px var(--neon-gold), 0 0 48px rgba(255, 184, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: none; animation: none;
         }
 
-        /* ── AMBIENT FLOATING PARTICLES ───────────────────────── */
-        .particles {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
+        .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--neon-pink);
-            box-shadow: 0 0 6px var(--neon-pink);
-            border-radius: 50%;
-            animation: particle-drift linear infinite;
+            position: absolute; width: 2px; height: 2px;
+            background: var(--neon-pink); box-shadow: 0 0 6px var(--neon-pink);
+            border-radius: 50%; animation: particle-drift linear infinite;
         }
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
-        /* ── SYSTEM MESSAGE STREAM (corner log) ───────────────── */
         .sysmsg {
-            position: fixed;
-            bottom: 16px;
-            right: 18px;
-            font-family: var(--font-stack);
-            font-size: 0.78em;
-            color: var(--neon-green);
-            text-shadow: 0 0 5px var(--neon-green);
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 5;
-            text-align: right;
-            min-height: 1.2em;
-            white-space: nowrap;
+            position: fixed; bottom: 16px; right: 18px;
+            font-family: var(--font-stack); font-size: 0.78em;
+            color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green);
+            opacity: 0.8; pointer-events: none; z-index: 5;
+            text-align: right; min-height: 1.2em; white-space: nowrap;
         }
-        .sysmsg .line {
-            animation: msg-in 4s ease-in-out forwards;
-        }
+        .sysmsg .line { animation: msg-in 4s ease-in-out forwards; }
 
-        /* ── BOOT SEQUENCE OVERLAY ────────────────────────────── */
         .boot {
-            position: fixed;
-            inset: 0;
-            z-index: 5000;
-            background: #04020a;
-            color: var(--neon-green);
-            font-family: var(--font-stack);
-            font-size: 0.95em;
-            padding: 24px 30px;
-            line-height: 1.5;
-            overflow: hidden;
+            position: fixed; inset: 0; z-index: 5000;
+            background: #04020a; color: var(--neon-green);
+            font-family: var(--font-stack); font-size: 0.95em;
+            padding: 24px 30px; line-height: 1.5; overflow: hidden;
             animation: boot-bg 1.4s ease-out forwards;
             text-shadow: 0 0 4px var(--neon-green);
         }
         .boot pre {
-            margin: 0;
-            white-space: pre-wrap;
-            color: var(--neon-pink);
-            text-shadow: 0 0 6px var(--neon-pink);
+            margin: 0; white-space: pre-wrap;
+            color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink);
         }
         .boot .ok { color: var(--neon-green); }
         .boot .warn { color: var(--neon-yellow); }
         .boot .err  { color: var(--neon-pink); }
 
-        /* ── ANNOUNCEMENT TIMELINE ────────────────────────────── */
+        .now-watching {
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 0, 0, 0.35);
+            padding: 14px 18px; margin-bottom: 22px;
+            position: relative; font-size: 0.9em;
+            color: var(--light-cyan);
+            box-shadow: 0 0 16px rgba(6, 227, 255, 0.18);
+            display: none;
+        }
+        .now-watching.live { display: block; animation: fadeIn 0.6s ease-out; }
+        .now-watching .nw-label {
+            font-family: var(--font-display); color: var(--neon-cyan);
+            text-shadow: 0 0 6px var(--neon-cyan); font-size: 1.1em;
+            letter-spacing: 0.12em; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .now-watching .nw-label::before { content: "▶"; animation: blink 1.2s step-end infinite; }
+        .now-watching .nw-titles { line-height: 1.5; }
+        .now-watching .nw-titles span { display: block; opacity: 0.9; }
+        .now-watching.silent {
+            border-color: rgba(255, 255, 255, 0.18);
+            color: rgba(255, 255, 255, 0.4);
+            box-shadow: none; display: block; font-style: italic;
+        }
+        .now-watching.silent .nw-label { color: rgba(255, 255, 255, 0.4); text-shadow: none; }
+        .now-watching.silent .nw-label::before { animation: none; opacity: 0.3; }
+
         .timeline {
-            position: relative;
-            padding-left: 24px;
+            position: relative; padding-left: 24px;
             border-left: 1px solid rgba(255, 43, 214, 0.35);
         }
-        .timeline p {
-            position: relative;
-            margin-bottom: 18px;
-            transition: opacity 0.2s ease;
-        }
+        .timeline p { position: relative; margin-bottom: 18px; transition: opacity 0.2s ease; }
         .timeline p::before {
-            content: "";
-            position: absolute;
-            left: -29px;
-            top: 9px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--neon-pink);
+            content: ""; position: absolute;
+            left: -29px; top: 9px; width: 9px; height: 9px;
+            border-radius: 50%; background: var(--neon-pink);
             box-shadow: 0 0 8px var(--neon-pink);
         }
         .timeline p:first-child::before {
-            background: var(--neon-cyan);
-            box-shadow: 0 0 12px var(--neon-cyan);
+            background: var(--neon-cyan); box-shadow: 0 0 12px var(--neon-cyan);
             animation: pulseDot 1.8s ease-in-out infinite;
         }
-        .timeline p:nth-child(n+5) { opacity: 0.7; }
-        .timeline p:nth-child(n+8) { opacity: 0.5; }
         .timeline p:hover { opacity: 1; }
 
-        /* ── KONAMI MODE (chromatic aberration) ───────────────── */
-        body.konami {
-            animation: hueShift 6s linear infinite;
+        .older-toggle {
+            display: inline-block; font-family: var(--font-stack);
+            color: var(--neon-cyan); text-shadow: 0 0 4px var(--neon-cyan);
+            padding: 6px 12px;
+            border: 1px solid rgba(6, 227, 255, 0.4);
+            background: rgba(6, 227, 255, 0.06);
+            margin: 8px 0 18px 0; font-size: 0.9em;
+            letter-spacing: 0.06em;
+            transition: all 0.18s ease; user-select: none;
         }
+        .older-toggle:hover {
+            background: var(--neon-cyan); color: #000;
+            text-shadow: none; box-shadow: 0 0 16px var(--neon-cyan);
+        }
+        .older-logs {
+            display: none;
+            border-left: 1px solid rgba(6, 227, 255, 0.25);
+            padding-left: 24px; position: relative;
+        }
+        .older-logs.open { display: block; animation: fadeIn 0.6s ease-out; }
+        .older-logs p { position: relative; margin-bottom: 16px; opacity: 0.55; transition: opacity 0.2s ease; }
+        .older-logs p:hover { opacity: 1; }
+        .older-logs p::before {
+            content: ""; position: absolute;
+            left: -29px; top: 9px; width: 7px; height: 7px;
+            border-radius: 50%; background: var(--neon-cyan);
+            box-shadow: 0 0 6px var(--neon-cyan); opacity: 0.6;
+        }
+
+        body.konami { animation: hueShift 6s linear infinite; }
         @keyframes hueShift {
             from { filter: hue-rotate(0deg) saturate(1.2); }
             to   { filter: hue-rotate(360deg) saturate(1.2); }
         }
 
-        /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 800px) {
-            body { justify-content: center; }
-            .main-wrapper {
-                width: 95%;
-                margin-left: 0;
-                margin-top: 5vh;
-            }
-            .links { grid-template-columns: repeat(2, 1fr); }
+            body { justify-content: center; background-position: 78% center; }
+            .main-wrapper { width: 95%; margin-left: 0; margin-top: 5vh; }
+            .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
+            .sysmsg { font-size: 0.7em; right: 10px; bottom: 10px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -592,31 +434,31 @@
                 </div>
             </section>
 
+            <div class="now-watching" id="nowWatching">
+                <div class="nw-label">now watching_</div>
+                <div class="nw-titles" id="nwTitles"></div>
+            </div>
+
             <hr>
 
             <section>
                 <h2>announcements_</h2>
                 <div class="timeline">
                     <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn't shit the bed as often going forward.</p>
-
                     <p><strong>&gt; jan 17, 2026: new year, same me.</strong> i'm in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
+                </div>
 
+                <span class="older-toggle" id="olderToggle" role="button" tabindex="0">&gt; show older logs_</span>
+
+                <div class="older-logs" id="olderLogs">
                     <p><strong>&gt; nov 15, 2025: big news.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
-
                     <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that i'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
-
                     <p><strong>&gt; oct 27, 2025: home stretch.</strong> there's still a lot of work to be done, and the server will be even more unstable than before (if you can imagine that) but it will all be worth it. for realsies.</p>
-
                     <p><strong>&gt; oct 12, 2025: offline.cont...</strong> certain things have come to light; lotta ins and outs, lotta what have yous.</p>
-
                     <p><strong>&gt; oct 6, 2025: offline.</strong> disk space was running out to 0 bytes, so all automation and requests are paused until the volume expansion completes. thank you for your patience.</p>
-
                     <p><strong>&gt; sept 25, 2025: upgradja.</strong> upgrading the last two drives to 18tb. some media might be slow for a couple of weeks. expanding a 110tb volume to 140tb takes some time.</p>
-
                     <p><strong>&gt; aug 21, 2025: apologies.</strong> shit was fucked for a bit there. should be good to go.</p>
-
                     <p><strong>&gt; aug 10, 2025: update your bookmarks!</strong> the couchpotatofries.org address now redirects here. please use weirdplexbutok.biz going forward.</p>
-
                     <p><strong>&gt; aug 08, 2025: hello friends...</strong> this is my new home. thanks for your patience during the upgrade cycle.</p>
                 </div>
             </section>
@@ -624,8 +466,17 @@
     </div>
 
     <script>
-        // ── BOOT SEQUENCE ────────────────────────────────────
         (function boot() {
+            const log = document.getElementById('bootlog');
+            const boot = document.getElementById('boot');
+            if (!log || !boot) return;
+            try {
+                if (sessionStorage.getItem('greg.bootSeen') === '1') {
+                    boot.style.display = 'none';
+                    return;
+                }
+                sessionStorage.setItem('greg.bootSeen', '1');
+            } catch (e) {}
             const lines = [
                 '> greg.os v4.7.1 booting...',
                 '> kernel: <span class="ok">[ ok ]</span> 6.6.55-Unraid',
@@ -640,19 +491,28 @@
                 '> <span class="err">!! anomaly: greg is awake !!</span>',
                 '> handing off to userland...'
             ];
-            const log = document.getElementById('bootlog');
-            const boot = document.getElementById('boot');
-            if (!log || !boot) return;
             let i = 0;
             const tick = setInterval(() => {
-                log.innerHTML += lines[i] + '\n';
-                i++;
+                log.innerHTML += lines[i] + '\n'; i++;
                 if (i >= lines.length) clearInterval(tick);
             }, 80);
             setTimeout(() => { boot.style.display = 'none'; }, 1500);
         })();
 
-        // ── AMBIENT FLOATING PARTICLES ──────────────────────
+        (function olderLogs() {
+            const t = document.getElementById('olderToggle');
+            const l = document.getElementById('olderLogs');
+            if (!t || !l) return;
+            function toggle() {
+                const open = l.classList.toggle('open');
+                t.textContent = open ? '> hide older logs_' : '> show older logs_';
+            }
+            t.addEventListener('click', toggle);
+            t.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+            });
+        })();
+
         (function particles() {
             const c = document.getElementById('particles');
             if (!c) return;
@@ -668,33 +528,93 @@
             }
         })();
 
-        // ── SYSTEM MESSAGE STREAM ───────────────────────────
+        // Live status: polls /status.json. Falls back to faux when absent/stale.
+        const gregStatus = { data: null, lastOk: 0 };
+        const FAUX_MSGS = [
+            '[greg] :: pulse OK',
+            '[transcoder] :: queue clear',
+            '[net] :: 2.5 GbE link up',
+            '[disk] :: parity sync nominal',
+            '[scan] :: 0 anomalies',
+            '[backup] :: zerobyte ok',
+            '[ntfy] :: 0 pending',
+            '[greg] :: vibing'
+        ];
+        function buildLiveMsgs(d) {
+            const m = [];
+            if (d.plex && typeof d.plex.active_sessions === 'number')
+                m.push(`[plex] :: ${d.plex.active_sessions} stream${d.plex.active_sessions === 1 ? '' : 's'} active`);
+            if (d.disk_array && d.disk_array.free_tb != null)
+                m.push(`[array] :: ${d.disk_array.free_tb.toFixed(1)} TB free`);
+            if (d.ram && d.ram.free_gib != null)
+                m.push(`[ram] :: ${d.ram.free_gib.toFixed(1)} GiB free`);
+            if (typeof d.cpu_percent === 'number')
+                m.push(`[cpu] :: ${d.cpu_percent.toFixed(0)}%`);
+            if (d.uk && d.uk.monitors_total != null)
+                m.push(`[uk] :: ${d.uk.monitors_up}/${d.uk.monitors_total} monitors up`);
+            if (typeof d.uptime_seconds === 'number') {
+                const dd = Math.floor(d.uptime_seconds / 86400);
+                const hh = Math.floor((d.uptime_seconds % 86400) / 3600);
+                m.push(`[uptime] :: ${dd}d ${String(hh).padStart(2, '0')}h`);
+            }
+            if (d.fans_rpm != null) m.push(`[fans] :: ${d.fans_rpm} rpm`);
+            if (d.online === false) m.push('[greg] :: offline');
+            else m.push('[greg] :: vibing');
+            return m;
+        }
+
+        async function fetchStatus() {
+            try {
+                const r = await fetch('/status.json', { cache: 'no-store' });
+                if (!r.ok) throw new Error('no status');
+                gregStatus.data = await r.json();
+                gregStatus.lastOk = Date.now();
+                applyStatus();
+            } catch (e) {
+                if (Date.now() - gregStatus.lastOk > 30000) {
+                    gregStatus.data = null;
+                    applyStatus();
+                }
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        function applyStatus() {
+            const dot = document.querySelector('.status-dot');
+            const label = document.querySelector('.status span:last-child');
+            const nw = document.getElementById('nowWatching');
+            const nwT = document.getElementById('nwTitles');
+            const d = gregStatus.data;
+
+            if (d && d.online === false) {
+                if (dot) { dot.style.background = 'var(--neon-pink)'; dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)'; }
+                if (label) label.textContent = 'greg.offline';
+            } else {
+                if (dot) { dot.style.background = 'var(--neon-green)'; dot.style.boxShadow = ''; }
+                if (label) label.textContent = 'greg.online';
+            }
+
+            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
+                nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
+                nw.classList.remove('silent'); nw.classList.add('live');
+            } else if (d) {
+                nwT.innerHTML = '<span>[silence]</span>';
+                nw.classList.remove('live'); nw.classList.add('silent');
+            }
+        }
+
         (function sysmsg() {
             const el = document.getElementById('sysmsg');
             if (!el) return;
-            const messages = [
-                '[greg] :: pulse OK',
-                '[transcoder] :: queue clear',
-                '[net] :: 2.5 GbE link up',
-                '[disk] :: parity sync nominal',
-                '[plex] :: 4 streams active',
-                '[temp] :: cpu 71.2C',
-                '[fans] :: 1840 rpm',
-                '[ram] :: 21.4 GiB free',
-                '[scan] :: 0 anomalies',
-                '[cache] :: 1.5 TB free',
-                '[uptime] :: 5d 03h',
-                '[seerr] :: 9 available',
-                '[radarr] :: queue clear',
-                '[backup] :: zerobyte ok',
-                '[ntfy] :: 0 pending',
-                '[uk] :: all 28 monitors green',
-                '[greg] :: vibing'
-            ];
             function fire() {
+                const live = gregStatus.data ? buildLiveMsgs(gregStatus.data) : null;
+                const pool = (live && live.length) ? live : FAUX_MSGS;
                 const line = document.createElement('div');
                 line.className = 'line';
-                line.textContent = messages[Math.floor(Math.random() * messages.length)];
+                line.textContent = pool[Math.floor(Math.random() * pool.length)];
                 el.appendChild(line);
                 setTimeout(() => line.remove(), 4200);
                 setTimeout(fire, 1800 + Math.random() * 2200);
@@ -702,21 +622,20 @@
             setTimeout(fire, 1800);
         })();
 
-        // ── RANDOM VIOLENT GLITCH BURSTS ON H1 ──────────────
+        fetchStatus();
+        setInterval(fetchStatus, 8000);
+
         (function violentGlitch() {
             const h1 = document.querySelector('h1.glitch');
             if (!h1) return;
             function fire() {
                 h1.style.animation = 'violent-glitch 0.32s steps(2, end) 1, blink 0.85s step-end infinite';
-                setTimeout(() => {
-                    h1.style.animation = '';
-                }, 320);
+                setTimeout(() => { h1.style.animation = ''; }, 320);
                 setTimeout(fire, 6000 + Math.random() * 9000);
             }
             setTimeout(fire, 4000);
         })();
 
-        // ── PARALLAX BACKGROUND ─────────────────────────────
         (function parallax() {
             if (!window.matchMedia('(min-width: 800px)').matches) return;
             document.addEventListener('mousemove', (e) => {
@@ -726,27 +645,21 @@
             });
         })();
 
-        // mouse-follow glow
         const glow = document.getElementById('cursorGlow');
-        let raf = null;
-        let tx = 0, ty = 0, cx = 0, cy = 0;
+        let raf = null; let tx = 0, ty = 0, cx = 0, cy = 0;
         document.addEventListener('mousemove', (e) => {
             tx = e.clientX; ty = e.clientY;
             glow.style.opacity = '1';
             if (!raf) raf = requestAnimationFrame(loop);
         });
         function loop() {
-            cx += (tx - cx) * 0.18;
-            cy += (ty - cy) * 0.18;
+            cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
             glow.style.transform = `translate(${cx - 250}px, ${cy - 250}px)`;
             if (Math.abs(tx - cx) > 0.4 || Math.abs(ty - cy) > 0.4) {
                 raf = requestAnimationFrame(loop);
-            } else {
-                raf = null;
-            }
+            } else { raf = null; }
         }
 
-        // hologram tilt on mousemove (subtle)
         const holo = document.querySelector('.hologram-container');
         if (holo && window.matchMedia('(min-width: 800px)').matches) {
             document.addEventListener('mousemove', (e) => {
@@ -760,19 +673,13 @@
             });
         }
 
-        // konami code → chromatic mode
         const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         let kIdx = 0;
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === konami[kIdx].toLowerCase()) {
                 kIdx++;
-                if (kIdx === konami.length) {
-                    document.body.classList.toggle('konami');
-                    kIdx = 0;
-                }
-            } else {
-                kIdx = 0;
-            }
+                if (kIdx === konami.length) { document.body.classList.toggle('konami'); kIdx = 0; }
+            } else { kIdx = 0; }
         });
     </script>
 

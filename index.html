@@ -50,11 +50,17 @@
             10%  { opacity: 0.8; } 90% { opacity: 0.8; }
             100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
-        @keyframes stack-life {
+        @keyframes stack-life-right {
             0%   { opacity: 0; transform: translateX(20px); }
-            6%   { opacity: 1; transform: translateX(0); }
+            7%   { opacity: 1; transform: translateX(0); }
             85%  { opacity: 1; }
             100% { opacity: 0; transform: translateX(-12px); }
+        }
+        @keyframes stack-life-left {
+            0%   { opacity: 0; transform: translateX(-20px); }
+            7%   { opacity: 1; transform: translateX(0); }
+            85%  { opacity: 1; }
+            100% { opacity: 0; transform: translateX(12px); }
         }
         @keyframes boot-bg {
             0%   { opacity: 1; } 85% { opacity: 1; }
@@ -264,20 +270,15 @@
             text-shadow: none; animation: none;
         }
 
-        /* ── LIVE OPS TILES ─────────────────────────────────── */
         .live-ops {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 22px 0 6px;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 10px; margin: 22px 0 6px;
         }
         .op-tile {
             background: rgba(0, 0, 0, 0.45);
             border: 1px solid rgba(6, 227, 255, 0.45);
-            padding: 12px 8px 10px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            padding: 12px 8px 10px; text-align: center;
+            position: relative; overflow: hidden;
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
         .op-tile:hover {
@@ -319,34 +320,31 @@
         .particle.cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
-        /* ── SYSMSG ROLLING STACK ───────────────────────────── */
+        /* ── ROLLING STAT STACKS (left=system, right=media) ─ */
         .sysmsg {
             position: fixed;
             bottom: 18px;
-            right: 22px;
             font-family: var(--font-stack);
-            font-size: 1.25em;
+            font-size: 1.2em;
             font-weight: 700;
-            color: var(--neon-green);
-            text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55), 0 0 28px rgba(93, 255, 177, 0.25);
+            text-shadow: 0 0 8px var(--neon-green), 0 0 18px rgba(93, 255, 177, 0.55);
             pointer-events: none;
             z-index: 5;
-            text-align: right;
             white-space: nowrap;
             display: flex;
             flex-direction: column;
             gap: 2px;
-            max-width: 38vw;
+            max-width: 32vw;
             letter-spacing: 0.04em;
+            color: var(--neon-green);
         }
-        .sysmsg .line {
-            opacity: 0;
-            animation: stack-life 18s linear forwards;
-            transform-origin: right bottom;
-        }
-        .sysmsg .line:nth-last-child(1) { opacity: 1; }
-        .sysmsg .line:nth-last-child(n+5) { color: rgba(93, 255, 177, 0.75); }
-        .sysmsg .line:nth-last-child(n+8) { color: rgba(93, 255, 177, 0.45); }
+        .sysmsg-left  { left: 22px;  text-align: left;  }
+        .sysmsg-right { right: 22px; text-align: right; }
+        .sysmsg .line { opacity: 0; }
+        .sysmsg-left  .line { transform-origin: left bottom;  animation: stack-life-left 17s linear forwards; }
+        .sysmsg-right .line { transform-origin: right bottom; animation: stack-life-right 17s linear forwards; }
+        .sysmsg .line:nth-last-child(n+4) { color: rgba(93, 255, 177, 0.7); }
+        .sysmsg .line:nth-last-child(n+6) { color: rgba(93, 255, 177, 0.4); }
 
         .boot {
             position: fixed; inset: 0; z-index: 5000;
@@ -445,7 +443,9 @@
             .links, .support { grid-template-columns: repeat(2, 1fr); }
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
-            .sysmsg { font-size: 0.95em; right: 10px; bottom: 10px; max-width: 70vw; }
+            .sysmsg { font-size: 0.85em; bottom: 10px; max-width: 48vw; }
+            .sysmsg-left { left: 8px; }
+            .sysmsg-right { right: 8px; }
             .live-ops { grid-template-columns: repeat(2, 1fr); }
             .op-value { font-size: 1.5em; }
         }
@@ -463,7 +463,8 @@
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
-    <div class="sysmsg" id="sysmsg"></div>
+    <div class="sysmsg sysmsg-left" id="sysmsgLeft"></div>
+    <div class="sysmsg sysmsg-right" id="sysmsgRight"></div>
 
     <div class="main-wrapper">
         <header>
@@ -607,57 +608,63 @@
             }
         })();
 
-        // Live status: polls greg's status endpoint. Falls back to faux when absent/stale.
+        // Live status
         const gregStatus = { data: null, lastOk: 0 };
-        const FAUX_MSGS = [
-            '[greg] :: pulse OK',
-            '[transcoder] :: queue clear',
-            '[net] :: 2.5 GbE link up',
-            '[disk] :: parity sync nominal',
-            '[scan] :: 0 anomalies',
-            '[backup] :: zerobyte ok',
-            '[ntfy] :: 0 pending',
-            '[greg] :: vibing',
-            '[qsv] :: idle',
-            '[plex] :: heartbeat',
-            '[sonarr] :: rss fetched',
-            '[radarr] :: queue clear',
-            '[bazarr] :: subs synced',
-            '[prowlarr] :: indexers green',
-            '[seerr] :: ready',
-            '[homepage] :: serving',
-            '[uk] :: monitors green',
-            '[parity] :: in sync',
-            '[fans] :: nominal',
-            '[temp] :: nominal',
-            '[ram] :: healthy',
-            '[gpu] :: idle',
-            '[cron] :: greg-purgr armed',
-            '[greg] :: holding',
-            '[greg] :: still here',
-            '[plex] :: streaming',
-            '[greg] :: cosmic'
+
+        // Two pools: SYSTEM (left stack) + MEDIA (right stack). No string lives in both.
+        const FAUX_SYS = [
+            '[kernel] :: 6.6.55 stable', '[parity] :: in sync', '[fans] :: nominal',
+            '[temp] :: nominal', '[ram] :: healthy', '[gpu] :: idle', '[qsv] :: idle',
+            '[disk] :: smart green', '[btrfs] :: scrub clean',
+            '[net] :: 2.5 GbE link up', '[bond0] :: tx ok', '[cron] :: greg-purgr armed',
+            '[backup] :: zerobyte ok', '[scan] :: 0 anomalies',
+            '[dockd] :: containers stable', '[unraid] :: array online',
+            '[load] :: nominal', '[swap] :: 0 used', '[clock] :: ntp synced',
+            '[greg] :: pulse OK', '[greg] :: vibing', '[greg] :: holding',
+            '[greg] :: still here', '[greg] :: cosmic', '[greg] :: alive',
+            '[greg] :: humming'
         ];
-        function buildLiveMsgs(d) {
+        const FAUX_MEDIA = [
+            '[plex] :: heartbeat', '[plex] :: idle', '[jellyfin] :: standby',
+            '[transcoder] :: queue clear', '[sonarr] :: rss fetched',
+            '[sonarr] :: queue clear', '[radarr] :: queue clear',
+            '[radarr] :: rss fetched', '[bazarr] :: subs synced',
+            '[prowlarr] :: indexers green', '[seerr] :: ready',
+            '[wizarr] :: invites idle', '[homepage] :: serving',
+            '[tautulli] :: tracking', '[ntfy] :: 0 pending',
+            '[kometa] :: collections fresh', '[maintainerr] :: rules ok',
+            '[uk] :: monitors green', '[recyclarr] :: synced',
+            '[cleanuparr] :: queue clear', '[plex] :: streaming',
+            '[greg-purgr] :: armed', '[uploads] :: idle'
+        ];
+
+        function buildSysMsgs(d) {
             const m = [];
-            if (d.plex && typeof d.plex.active_sessions === 'number')
-                m.push(`[plex] :: ${d.plex.active_sessions} stream${d.plex.active_sessions === 1 ? '' : 's'} active`);
-            if (d.disk_array && d.disk_array.free_tb != null)
-                m.push(`[array] :: ${d.disk_array.free_tb.toFixed(1)} TB free`);
-            if (d.ram && d.ram.free_gib != null)
-                m.push(`[ram] :: ${d.ram.free_gib.toFixed(1)} GiB free`);
             if (typeof d.cpu_percent === 'number')
                 m.push(`[cpu] :: ${d.cpu_percent.toFixed(0)}%`);
-            if (d.uk && d.uk.monitors_total != null)
-                m.push(`[uk] :: ${d.uk.monitors_up}/${d.uk.monitors_total} monitors up`);
+            if (d.ram && d.ram.free_gib != null)
+                m.push(`[ram] :: ${d.ram.free_gib.toFixed(1)} GiB free`);
+            if (d.fans_rpm != null) m.push(`[fans] :: ${d.fans_rpm} rpm`);
             if (typeof d.uptime_seconds === 'number') {
                 const dd = Math.floor(d.uptime_seconds / 86400);
                 const hh = Math.floor((d.uptime_seconds % 86400) / 3600);
                 m.push(`[uptime] :: ${dd}d ${String(hh).padStart(2, '0')}h`);
             }
-            if (d.fans_rpm != null) m.push(`[fans] :: ${d.fans_rpm} rpm`);
             if (d.online === false) m.push('[greg] :: offline');
-            else m.push('[greg] :: vibing');
+            return m;
+        }
+        function buildMediaMsgs(d) {
+            const m = [];
+            if (d.plex && typeof d.plex.active_sessions === 'number')
+                m.push(`[plex] :: ${d.plex.active_sessions} stream${d.plex.active_sessions === 1 ? '' : 's'} active`);
+            if (d.disk_array && d.disk_array.free_tb != null)
+                m.push(`[array] :: ${d.disk_array.free_tb.toFixed(1)} TB free`);
+            if (d.uk && d.uk.monitors_total != null)
+                m.push(`[uk] :: ${d.uk.monitors_up}/${d.uk.monitors_total} monitors up`);
+            if (d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
+                const t = d.plex.now_watching[Math.floor(Math.random() * d.plex.now_watching.length)];
+                m.push(`[playing] :: ${t.length > 36 ? t.slice(0, 33) + '...' : t}`);
+            }
             return m;
         }
 
@@ -735,21 +742,21 @@
             }
         }
 
-        // Sysmsg rolling stack: keeps ~10 lines visible, newest at the bottom
-        (function sysmsg() {
-            const el = document.getElementById('sysmsg');
+        // Each stack: max 6 visible, ~2.1s tick, 17s lifetime, 4-deep dedup.
+        function mountStack({ el, faux, buildLive, tickMin, tickMax, startDelay, maxVisible = 6, lifeMs = 17000 }) {
             if (!el) return;
-            const MAX_VISIBLE = 10;
-            const MSG_LIFE_MS = 18000;
-            let lastMsg = '';
+            const recent = [];
+            const RECENT_DEPTH = 4;
             function pickMsg() {
-                const live = gregStatus.data ? buildLiveMsgs(gregStatus.data) : null;
-                const pool = (live && live.length) ? live : FAUX_MSGS;
-                let pick = pool[Math.floor(Math.random() * pool.length)];
-                if (pool.length > 1 && pick === lastMsg) {
-                    pick = pool[(pool.indexOf(pick) + 1) % pool.length];
-                }
-                lastMsg = pick;
+                const live = gregStatus.data ? buildLive(gregStatus.data) : [];
+                const pool = (live.length >= 3 ? live.concat(faux) : faux.concat(live));
+                let pick, tries = 0;
+                do {
+                    pick = pool[Math.floor(Math.random() * pool.length)];
+                    tries++;
+                } while (recent.includes(pick) && tries < 8);
+                recent.push(pick);
+                while (recent.length > RECENT_DEPTH) recent.shift();
                 return pick;
             }
             function fire() {
@@ -757,12 +764,22 @@
                 line.className = 'line';
                 line.textContent = pickMsg();
                 el.appendChild(line);
-                while (el.children.length > MAX_VISIBLE) el.firstChild.remove();
-                setTimeout(() => line.remove(), MSG_LIFE_MS);
-                setTimeout(fire, 1100 + Math.random() * 700);
+                while (el.children.length > maxVisible) el.firstChild.remove();
+                setTimeout(() => line.remove(), lifeMs);
+                setTimeout(fire, tickMin + Math.random() * (tickMax - tickMin));
             }
-            setTimeout(fire, 1200);
-        })();
+            setTimeout(fire, startDelay);
+        }
+        mountStack({
+            el: document.getElementById('sysmsgLeft'),
+            faux: FAUX_SYS, buildLive: buildSysMsgs,
+            tickMin: 1900, tickMax: 2600, startDelay: 1200
+        });
+        mountStack({
+            el: document.getElementById('sysmsgRight'),
+            faux: FAUX_MEDIA, buildLive: buildMediaMsgs,
+            tickMin: 2000, tickMax: 2700, startDelay: 1900
+        });
 
         fetchStatus();
         setInterval(fetchStatus, 8000);

@@ -51,12 +51,12 @@
             100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
         }
         @keyframes line-in {
-            from { opacity: 0; transform: translateX(20px); }
-            to   { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes line-out {
             from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 0; transform: translateY(10px); }
         }
         @keyframes boot-bg {
             0%   { opacity: 1; } 85% { opacity: 1; }
@@ -317,6 +317,7 @@
         .particle.gold { background: var(--neon-gold); box-shadow: 0 0 6px var(--neon-gold); }
 
         /* ── ROLLING STAT QUEUE — single stream rendered across two columns ─ */
+        /* New entries appear at top of left (13 slots), drop down, hand off to top of right (7 slots), drop, die. */
         .sysmsg {
             position: fixed;
             bottom: 18px;
@@ -437,8 +438,8 @@
             header { text-align: center; align-items: center; }
             h1 { font-size: 2.6em; width: 11ch; }
             .sysmsg { bottom: 10px; font-size: 0.95em; }
-            .sysmsg-right { right: 8px; max-width: 70vw; }
-            .sysmsg-left  { display: none; }
+            .sysmsg-left  { right: 8px; max-width: 70vw; }
+            .sysmsg-right { display: none; }
             .live-ops { grid-template-columns: repeat(2, 1fr); }
             .op-value { font-size: 1.5em; }
         }
@@ -735,21 +736,21 @@
 
         // ── ROLLING STAT QUEUE ──────────────────────────────
         // Single stream rendered across two columns:
-        //   newest at bottom-right -> flows up the right column (7 slots)
-        //   continues at bottom of left column (13 slots) -> flows up
-        //   disappears off the top of left after 20 total
+        //   newest at top of left (13 slots) -> drops down
+        //   hands off to top of right (7 slots) -> drops down
+        //   disappears off bottom-right after 20 total
         (function rollingQueue() {
             const right = document.getElementById('sysmsgRight');
             const left  = document.getElementById('sysmsgLeft');
             if (!right || !left) return;
 
-            const RIGHT_MAX = 7;
+            const LEFT_MAX  = 13;
             const TOTAL_MAX = 20;
-            const TICK_MIN = 1800;
-            const TICK_MAX = 2400;
+            const TICK_MIN  = 1800;
+            const TICK_MAX  = 2400;
             const RECENT_DEPTH = 6;
 
-            const queue = [];
+            const queue = [];   // queue[0] is NEWEST (top-left), end is OLDEST (bottom-right)
             const recent = [];
 
             function pickMsg() {
@@ -769,20 +770,20 @@
             }
 
             function reflow() {
-                const split = Math.max(0, queue.length - RIGHT_MAX);
-                for (let i = 0; i < split; i++) left.appendChild(queue[i]);
-                for (let i = split; i < queue.length; i++) right.appendChild(queue[i]);
+                const lim = Math.min(LEFT_MAX, queue.length);
+                for (let i = 0; i < lim; i++) left.appendChild(queue[i]);
+                for (let i = LEFT_MAX; i < queue.length; i++) right.appendChild(queue[i]);
             }
 
             function fire() {
                 const node = document.createElement('div');
                 node.className = 'line';
                 node.textContent = pickMsg();
-                right.appendChild(node);
-                queue.push(node);
+                left.appendChild(node);
+                queue.unshift(node);
 
                 while (queue.length > TOTAL_MAX) {
-                    const stale = queue.shift();
+                    const stale = queue.pop();
                     stale.classList.add('fading');
                     setTimeout(() => stale.remove(), 500);
                 }

@@ -44,8 +44,8 @@
             100% { background-position: 0 100vh; }
         }
         @keyframes pulseDot {
-            0%, 100% { box-shadow: 0 0 4px var(--neon-green), 0 0 12px var(--neon-green); }
-            50%      { box-shadow: 0 0 8px var(--neon-green), 0 0 24px var(--neon-green); transform: scale(1.15); }
+            0%, 100% { box-shadow: 0 0 4px var(--neon-green), 0 0 12px var(--neon-green); background: var(--neon-green); }
+            50%      { box-shadow: 0 0 8px var(--neon-green), 0 0 24px var(--neon-green); transform: scale(1.2); background: #fff; }
         }
         @keyframes typewriter {
             from { width: 0; }
@@ -116,6 +116,7 @@
         }
         a, button, .button { cursor: crosshair; }
 
+        /* ── CRT SCANLINES (full-page overlay) ───────────────── */
         body::before {
             content: "";
             position: fixed;
@@ -132,6 +133,7 @@
             mix-blend-mode: multiply;
         }
 
+        /* ── CRT VIGNETTE ─────────────────────────────────────── */
         body::after {
             content: "";
             position: fixed;
@@ -141,6 +143,9 @@
             background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
         }
 
+        /* (synthetic grid floor removed — background image owns the grid now) */
+
+        /* ── MOUSE-FOLLOW GLOW ────────────────────────────────── */
         .cursor-glow {
             position: fixed;
             top: 0; left: 0;
@@ -156,6 +161,7 @@
         }
         body:hover .cursor-glow { opacity: 1; }
 
+        /* ── LAYOUT ───────────────────────────────────────────── */
         .main-wrapper {
             width: 90%;
             max-width: 520px;
@@ -166,6 +172,7 @@
             position: relative;
         }
 
+        /* ── HEADER ───────────────────────────────────────────── */
         header {
             text-align: left;
             margin-bottom: 22px;
@@ -173,7 +180,40 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            position: relative;
         }
+        .ticket-container {
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            transform: rotate(15deg);
+            z-index: 10;
+            pointer-events: none;
+        }
+        .ticket {
+            background: #2b45ff;
+            color: var(--neon-yellow);
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            padding: 5px 15px;
+            border: 2px dashed var(--neon-yellow);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+        .ticket::before, .ticket::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #04020a;
+            border-radius: 50%;
+            top: 50%;
+            margin-top: -6px;
+        }
+        .ticket::before { left: -8px; }
+        .ticket::after { right: -8px; }
         .h1-wrap {
             position: relative;
             display: inline-block;
@@ -202,6 +242,7 @@
                 flicker 6s linear 1.6s infinite;
         }
 
+        /* ── GLITCH (RGB-split slices behind h1) ──────────────── */
         .glitch::before,
         .glitch::after {
             content: attr(data-text);
@@ -229,6 +270,7 @@
             opacity: 0.6;
         }
 
+        /* ── STATUS DOT ───────────────────────────────────────── */
         .status {
             display: inline-flex;
             align-items: center;
@@ -248,6 +290,7 @@
             animation: pulseDot 1.6s ease-in-out infinite;
         }
 
+        /* ── HOLOGRAPHIC PROJECTOR ────────────────────────────── */
         .hologram-container {
             background: var(--bg-overlay);
             border: 1px solid var(--neon-pink);
@@ -289,6 +332,7 @@
             pointer-events: none;
         }
 
+        /* ── TYPOGRAPHY & CONTENT ─────────────────────────────── */
         h2 {
             font-family: var(--font-display);
             font-size: 1.6em;
@@ -323,15 +367,21 @@
             opacity: 0.55;
         }
 
+        /* ── BUTTON GRID ──────────────────────────────────────── */
         .links {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             width: 100%;
         }
+        .button.primary {
+            border-width: 2px;
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--neon-pink-soft);
+        }
         .support {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             width: 100%;
             margin-top: 14px;
@@ -386,6 +436,7 @@
             text-shadow: none;
         }
 
+        /* ── SUPPORT BUTTONS (gold accent, slightly louder) ──── */
         .button.support-btn {
             border-color: var(--neon-gold);
             color: var(--neon-gold);
@@ -415,6 +466,7 @@
             animation: none;
         }
 
+        /* ── AMBIENT FLOATING PARTICLES ───────────────────────── */
         .particles {
             position: fixed;
             inset: 0;
@@ -473,6 +525,7 @@
             to   { transform: translateX(-50%); }
         }
 
+        /* ── LIVE OPS STRIP ─────────────────────────────────── */
         .live-ops {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -527,9 +580,11 @@
         }
         .op-tile.flash { animation: valueFlash 0.6s ease-out; }
 
+        /* Bigger status dot in the header */
         .status { font-size: 1.05em; }
         .status-dot { width: 11px; height: 11px; }
 
+        /* ── BOOT SEQUENCE OVERLAY ────────────────────────────── */
         .boot {
             position: fixed;
             inset: 0;
@@ -554,6 +609,7 @@
         .boot .warn { color: var(--neon-yellow); }
         .boot .err  { color: var(--neon-pink); }
 
+        /* ── NOW WATCHING CARD ───────────────────────────────── */
         .now-watching {
             border: 1px solid var(--neon-cyan);
             background: rgba(0, 0, 0, 0.35);
@@ -578,7 +634,7 @@
             gap: 8px;
         }
         .now-watching .nw-label::before {
-            content: "\25B6";
+            content: "▶";
             animation: blink 1.2s step-end infinite;
         }
         .now-watching .nw-titles { line-height: 1.5; }
@@ -593,6 +649,7 @@
         .now-watching.silent .nw-label { color: rgba(255, 255, 255, 0.4); text-shadow: none; }
         .now-watching.silent .nw-label::before { animation: none; opacity: 0.3; }
 
+        /* ── ANNOUNCEMENT TIMELINE ────────────────────────────── */
         .timeline {
             position: relative;
             padding-left: 24px;
@@ -668,6 +725,7 @@
             opacity: 0.6;
         }
 
+        /* ── KONAMI MODE (chromatic aberration) ───────────────── */
         body.konami {
             animation: hueShift 6s linear infinite;
         }
@@ -676,6 +734,7 @@
             to   { filter: hue-rotate(360deg) saturate(1.2); }
         }
 
+        /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 800px) {
             body {
                 justify-content: center;
@@ -700,17 +759,171 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ── ZELLE MODAL ──────────────────────────────────────── */
+        .zelle-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            background: rgba(4, 2, 10, 0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .zelle-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .zelle-modal {
+            background: rgba(8, 4, 18, 0.97);
+            border: 1px solid var(--neon-gold);
+            box-shadow:
+                0 0 40px rgba(255, 184, 0, 0.28),
+                inset 0 0 40px rgba(255, 184, 0, 0.03);
+            padding: 28px 28px 22px;
+            max-width: 300px;
+            width: 88%;
+            text-align: center;
+            position: relative;
+        }
+        .zelle-overlay.open .zelle-modal {
+            animation: zelleIn 0.28s steps(3, end) forwards;
+        }
+        @keyframes zelleIn {
+            0%   { transform: translate(0, 10px) scaleY(0.88); opacity: 0; clip-path: inset(45% 0 45% 0); }
+            33%  { transform: translate(-3px, 0) scaleY(1.02); opacity: 0.6; clip-path: inset(15% 0 15% 0); }
+            66%  { transform: translate(2px, 0) scaleY(0.99); opacity: 0.88; clip-path: inset(4% 0 4% 0); }
+            100% { transform: translate(0) scaleY(1); opacity: 1; clip-path: inset(0 0 0 0); }
+        }
+        .zelle-modal::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-gold), transparent);
+        }
+        .zelle-modal-title {
+            font-family: var(--font-display);
+            color: var(--neon-gold);
+            font-size: 1.8em;
+            text-shadow: 0 0 12px var(--neon-gold);
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .zelle-modal-hint {
+            font-size: 0.82em;
+            color: rgba(161, 255, 255, 0.5);
+            letter-spacing: 0.1em;
+            margin: 0 0 16px 0;
+        }
+        .zelle-qr-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 18px;
+        }
+        .zelle-qr {
+            display: block;
+            width: 220px;
+            max-width: 100%;
+            border: 2px solid var(--neon-gold);
+            box-shadow: 0 0 16px rgba(255, 184, 0, 0.3);
+        }
+        .zelle-overlay.open .zelle-qr {
+            animation: qrReveal 0.5s ease-out 0.15s both;
+        }
+        @keyframes qrReveal {
+            0%   { filter: brightness(0) saturate(0); }
+            35%  { filter: brightness(2) saturate(2) hue-rotate(30deg); }
+            100% { filter: brightness(1) saturate(1); }
+        }
+        .zelle-qr-wrap::after {
+            content: "";
+            position: absolute;
+            left: 2px; right: 2px;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--neon-cyan) 20%,
+                rgba(255,255,255,0.9) 50%,
+                var(--neon-cyan) 80%,
+                transparent 100%
+            );
+            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(6, 227, 255, 0.4);
+            animation: qrScan 2.4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes qrScan {
+            0%   { top: 2px; opacity: 0; }
+            5%   { opacity: 1; }
+            45%  { top: calc(50% - 1px); opacity: 1; }
+            55%  { top: calc(50% - 1px); opacity: 1; }
+            93%  { opacity: 1; }
+            100% { top: calc(100% - 4px); opacity: 0; }
+        }
+        .zelle-qr-corner {
+            position: absolute;
+            width: 14px; height: 14px;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .zelle-qr-corner.tl { top: -1px; left: -1px; border-top: 2px solid var(--neon-cyan); border-left: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.tr { top: -1px; right: -1px; border-top: 2px solid var(--neon-cyan); border-right: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--neon-cyan); border-left: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--neon-cyan); border-right: 2px solid var(--neon-cyan); }
+        .zelle-close {
+            background: transparent;
+            border: 1px solid rgba(255, 184, 0, 0.5);
+            color: var(--neon-gold);
+            font-family: var(--font-stack);
+            font-size: 0.88em;
+            letter-spacing: 0.12em;
+            padding: 9px 24px;
+            cursor: crosshair;
+            transition: all 0.18s ease;
+            text-transform: lowercase;
+        }
+        .zelle-close:hover {
+            background: var(--neon-gold);
+            color: #000;
+            box-shadow: 0 0 18px var(--neon-gold);
+            text-shadow: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
+
+    <div class="zelle-overlay" id="zelleOverlay" role="dialog" aria-modal="true" aria-label="Zelle QR code">
+        <div class="zelle-modal">
+            <div class="zelle-modal-title">&gt;&gt; zelle_</div>
+            <p class="zelle-modal-hint">scan to send greg snack money_</p>
+            <div class="zelle-qr-wrap">
+                <img src="zelle.jpg" alt="Zelle QR code" class="zelle-qr">
+                <span class="zelle-qr-corner tl"></span>
+                <span class="zelle-qr-corner tr"></span>
+                <span class="zelle-qr-corner bl"></span>
+                <span class="zelle-qr-corner br"></span>
+            </div>
+            <button type="button" class="zelle-close" onclick="closeZelleModal()">[ close ]</button>
+        </div>
+    </div>
+
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
 
     <div class="main-wrapper">
         <header>
+            <div class="ticket-container">
+                <div class="ticket">greg</div>
+            </div>
             <div class="h1-wrap">
                 <h1 class="glitch" data-text="&gt; welcome...">&gt; welcome...</h1>
             </div>
@@ -725,9 +938,10 @@
             <section>
                 <h2>quick links_</h2>
                 <div class="links">
-                    <a href="https://plex.weirdplexbutok.biz/" class="button">plex</a>
+                    <a href="https://plex.weirdplexbutok.biz/" class="button primary">plex</a>
                     <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
                     <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
+                    <a href="onboarding.html" class="button">setup</a>
                 </div>
 
                 <div class="support-label">::: support greg :::</div>
@@ -735,24 +949,25 @@
                     <a href="https://www.venmo.com/u/Thomas-Connally" class="button support-btn" target="_blank" rel="noopener noreferrer">venmo</a>
                     <a href="https://paypal.me/thomasconnally1111" class="button support-btn" target="_blank" rel="noopener noreferrer">paypal</a>
                     <a href="https://www.amazon.com/hz/wishlist/ls/2ZIX2XZ72O4YZ?ref_=wl_share" class="button support-btn" target="_blank" rel="noopener noreferrer">upgrades</a>
+                    <button type="button" class="button support-btn" onclick="openZelleModal()">zelle</button>
                 </div>
             </section>
 
             <div class="live-ops" id="liveOps">
                 <div class="op-tile" id="opStreamsTile">
-                    <div class="op-value" id="opStreams">&mdash;</div>
+                    <div class="op-value" id="opStreams">—</div>
                     <div class="op-label">streams</div>
                 </div>
                 <div class="op-tile" id="opCpuTile">
-                    <div class="op-value" id="opCpu">&mdash;</div>
+                    <div class="op-value" id="opCpu">—</div>
                     <div class="op-label">cpu</div>
                 </div>
                 <div class="op-tile" id="opArrayTile">
-                    <div class="op-value" id="opArray">&mdash;</div>
+                    <div class="op-value" id="opArray">—</div>
                     <div class="op-label">free</div>
                 </div>
                 <div class="op-tile" id="opUptimeTile">
-                    <div class="op-value" id="opUptime">&mdash;</div>
+                    <div class="op-value" id="opUptime">—</div>
                     <div class="op-label">uptime</div>
                 </div>
             </div>
@@ -767,14 +982,16 @@
             <section>
                 <h2>announcements_</h2>
                 <div class="timeline">
-                    <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn't shit the bed as often going forward.</p>
+                    <p><strong>&gt; may 09, 2026: visual systems overhaul.</strong> deployed blue arcade ticket logo and hardware-style pulsing led status. less manual hand-holding, more vibes.</p>
 
-                    <p><strong>&gt; jan 17, 2026: new year, same me.</strong> i'm in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
+                    <p><strong>&gt; may 08, 2026: greg has relocated.</strong> new coordinates, same vibes. shouldn''t shit the bed as often going forward.</p>
                 </div>
 
                 <span class="older-toggle" id="olderToggle" role="button" tabindex="0">&gt; show older logs_</span>
 
                 <div class="older-logs" id="olderLogs">
+                    <p><strong>&gt; jan 17, 2026: new year, same me.</strong> i''m in the middle of a huge server rebuild/upgrade. plex is working, but the request portal and the automation that downloads new shit is suspended during a 94tb data migration.</p>
+
                     <p><strong>&gt; nov 15, 2025: big news.</strong> you can now access plex directly at https://plex.weirdplexbutok.biz/ (see the quick links section).</p>
 
                     <p><strong>&gt; nov 07, 2025: 3i/atlas.</strong> we're gonna get aliens before gta6 and it will probably be after then that i'll have plex working and stable again. thx for your continued understanding during these precedented times.</p>
@@ -798,6 +1015,7 @@
     </div>
 
     <script>
+        // ── BOOT SEQUENCE (skipped on repeat session visits) ─
         (function boot() {
             const log = document.getElementById('bootlog');
             const boot = document.getElementById('boot');
@@ -808,7 +1026,7 @@
                     return;
                 }
                 sessionStorage.setItem('greg.bootSeen', '1');
-            } catch (e) {}
+            } catch (e) { /* private mode — show anyway */ }
             const lines = [
                 '> greg.os v4.7.1 booting...',
                 '> kernel: <span class="ok">[ ok ]</span> 6.6.55-Unraid',
@@ -825,12 +1043,14 @@
             ];
             let i = 0;
             const tick = setInterval(() => {
-                log.innerHTML += lines[i] + '\n'; i++;
+                log.innerHTML += lines[i] + '\n';
+                i++;
                 if (i >= lines.length) clearInterval(tick);
             }, 80);
             setTimeout(() => { boot.style.display = 'none'; }, 1500);
         })();
 
+        // ── OLDER LOGS TOGGLE ───────────────────────────────
         (function olderLogs() {
             const t = document.getElementById('olderToggle');
             const l = document.getElementById('olderLogs');
@@ -845,6 +1065,7 @@
             });
         })();
 
+        // ── AMBIENT FLOATING PARTICLES ──────────────────────
         (function particles() {
             const c = document.getElementById('particles');
             if (!c) return;
@@ -860,8 +1081,11 @@
             }
         })();
 
+        // ── LIVE STATUS (graceful fallback to faux) ─────────
+        // Polls /status.json. If available, drives sysmsg + status dot + now-watching.
+        // If 404/error, falls back to cycling pre-baked faux messages so the page still feels alive.
         const gregStatus = { data: null, lastOk: 0 };
-
+        // Two pools: SYSTEM (left stack) + MEDIA (right stack). No string lives in both.
         const FAUX_SYS = [
             '[kernel] :: 6.6.55 stable', '[parity] :: in sync', '[fans] :: nominal',
             '[temp] :: nominal', '[ram] :: healthy', '[gpu] :: idle', '[qsv] :: idle',
@@ -924,6 +1148,7 @@
                 gregStatus.lastOk = Date.now();
                 applyStatus();
             } catch (e) {
+                // graceful fall-through to faux mode
                 if (Date.now() - gregStatus.lastOk > 30000) {
                     gregStatus.data = null;
                     applyStatus();
@@ -931,14 +1156,48 @@
             }
         }
 
-        function escapeHtml(s) {
-            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        function applyStatus() {
+            const dot = document.querySelector('.status-dot');
+            const label = document.querySelector('.status span:last-child');
+            const nw = document.getElementById('nowWatching');
+            const nwT = document.getElementById('nwTitles');
+            const d = gregStatus.data;
+
+            if (d && d.online === false) {
+                if (dot) dot.style.background = 'var(--neon-pink)';
+                if (dot) dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)';
+                if (label) label.textContent = 'greg.offline';
+            } else {
+                if (dot) dot.style.background = 'var(--neon-green)';
+                if (dot) dot.style.boxShadow = '';
+                if (label) label.textContent = 'greg.online';
+            }
+
+            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
+                nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
+                nw.classList.remove('silent');
+                nw.classList.add('live');
+            } else if (d) {
+                nwT.innerHTML = '<span>[silence]</span>';
+                nw.classList.remove('live');
+                nw.classList.add('silent');
+            }
+            // else: leave hidden (no real data yet)
+
+            // live-ops tiles
+            if (d) {
+                setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
+                setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
+                setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
+                setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
+            }
         }
 
         function formatUptime(s) {
             const dd = Math.floor(s / 86400);
             const hh = Math.floor((s % 86400) / 3600);
-            return dd > 0 ? `${dd}d` : `${hh}h`;
+            if (dd > 0) return `${dd}d`;
+            return `${hh}h`;
         }
 
         function setOp(id, value, unit, classifier) {
@@ -959,35 +1218,8 @@
             if (cls) tile.classList.add(cls);
         }
 
-        function applyStatus() {
-            const dot = document.querySelector('.status-dot');
-            const label = document.querySelector('.status span:last-child');
-            const nw = document.getElementById('nowWatching');
-            const nwT = document.getElementById('nwTitles');
-            const d = gregStatus.data;
-
-            if (d && d.online === false) {
-                if (dot) { dot.style.background = 'var(--neon-pink)'; dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)'; }
-                if (label) label.textContent = 'greg.offline';
-            } else {
-                if (dot) { dot.style.background = 'var(--neon-green)'; dot.style.boxShadow = ''; }
-                if (label) label.textContent = 'greg.online';
-            }
-
-            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
-                nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
-                nw.classList.remove('silent'); nw.classList.add('live');
-            } else if (d) {
-                nwT.innerHTML = '<span>[silence]</span>';
-                nw.classList.remove('live'); nw.classList.add('silent');
-            }
-
-            if (d) {
-                setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
-                setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
-                setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
-                setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
-            }
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
         // ── BOTTOM TICKER ───────────────────────────────────
@@ -1027,20 +1259,25 @@
             setInterval(fill, 30000);
         })();
 
+        // poll greg status every 8s
         fetchStatus();
         setInterval(fetchStatus, 8000);
 
+        // ── RANDOM VIOLENT GLITCH BURSTS ON H1 ──────────────
         (function violentGlitch() {
             const h1 = document.querySelector('h1.glitch');
             if (!h1) return;
             function fire() {
                 h1.style.animation = 'violent-glitch 0.32s steps(2, end) 1, blink 0.85s step-end infinite';
-                setTimeout(() => { h1.style.animation = ''; }, 320);
+                setTimeout(() => {
+                    h1.style.animation = '';
+                }, 320);
                 setTimeout(fire, 6000 + Math.random() * 9000);
             }
             setTimeout(fire, 4000);
         })();
 
+        // ── PARALLAX BACKGROUND ─────────────────────────────
         (function parallax() {
             if (!window.matchMedia('(min-width: 800px)').matches) return;
             document.addEventListener('mousemove', (e) => {
@@ -1050,21 +1287,27 @@
             });
         })();
 
+        // mouse-follow glow
         const glow = document.getElementById('cursorGlow');
-        let raf = null; let tx = 0, ty = 0, cx = 0, cy = 0;
+        let raf = null;
+        let tx = 0, ty = 0, cx = 0, cy = 0;
         document.addEventListener('mousemove', (e) => {
             tx = e.clientX; ty = e.clientY;
             glow.style.opacity = '1';
             if (!raf) raf = requestAnimationFrame(loop);
         });
         function loop() {
-            cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
+            cx += (tx - cx) * 0.18;
+            cy += (ty - cy) * 0.18;
             glow.style.transform = `translate(${cx - 250}px, ${cy - 250}px)`;
             if (Math.abs(tx - cx) > 0.4 || Math.abs(ty - cy) > 0.4) {
                 raf = requestAnimationFrame(loop);
-            } else { raf = null; }
+            } else {
+                raf = null;
+            }
         }
 
+        // hologram tilt on mousemove (subtle)
         const holo = document.querySelector('.hologram-container');
         if (holo && window.matchMedia('(min-width: 800px)').matches) {
             document.addEventListener('mousemove', (e) => {
@@ -1078,13 +1321,39 @@
             });
         }
 
+        // ── ZELLE MODAL ─────────────────────────────────────────
+        (function zelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) closeZelleModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeZelleModal(); });
+        })();
+        function openZelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeZelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // konami code → chromatic mode
         const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         let kIdx = 0;
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === konami[kIdx].toLowerCase()) {
                 kIdx++;
-                if (kIdx === konami.length) { document.body.classList.toggle('konami'); kIdx = 0; }
-            } else { kIdx = 0; }
+                if (kIdx === konami.length) {
+                    document.body.classList.toggle('konami');
+                    kIdx = 0;
+                }
+            } else {
+                kIdx = 0;
+            }
         });
     </script>
 

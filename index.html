@@ -370,7 +370,7 @@
         /* ── BUTTON GRID ──────────────────────────────────────── */
         .links {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             width: 100%;
         }
@@ -381,7 +381,7 @@
         }
         .support {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             width: 100%;
             margin-top: 14px;
@@ -759,11 +759,162 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ── ZELLE MODAL ──────────────────────────────────────── */
+        .zelle-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            background: rgba(4, 2, 10, 0.88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.22s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .zelle-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .zelle-modal {
+            background: rgba(8, 4, 18, 0.97);
+            border: 1px solid var(--neon-gold);
+            box-shadow:
+                0 0 40px rgba(255, 184, 0, 0.28),
+                inset 0 0 40px rgba(255, 184, 0, 0.03);
+            padding: 28px 28px 22px;
+            max-width: 300px;
+            width: 88%;
+            text-align: center;
+            position: relative;
+        }
+        .zelle-overlay.open .zelle-modal {
+            animation: zelleIn 0.28s steps(3, end) forwards;
+        }
+        @keyframes zelleIn {
+            0%   { transform: translate(0, 10px) scaleY(0.88); opacity: 0; clip-path: inset(45% 0 45% 0); }
+            33%  { transform: translate(-3px, 0) scaleY(1.02); opacity: 0.6; clip-path: inset(15% 0 15% 0); }
+            66%  { transform: translate(2px, 0) scaleY(0.99); opacity: 0.88; clip-path: inset(4% 0 4% 0); }
+            100% { transform: translate(0) scaleY(1); opacity: 1; clip-path: inset(0 0 0 0); }
+        }
+        .zelle-modal::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-gold), transparent);
+        }
+        .zelle-modal-title {
+            font-family: var(--font-display);
+            color: var(--neon-gold);
+            font-size: 1.8em;
+            text-shadow: 0 0 12px var(--neon-gold);
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .zelle-modal-hint {
+            font-size: 0.82em;
+            color: rgba(161, 255, 255, 0.5);
+            letter-spacing: 0.1em;
+            margin: 0 0 16px 0;
+        }
+        .zelle-qr-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 18px;
+        }
+        .zelle-qr {
+            display: block;
+            width: 220px;
+            max-width: 100%;
+            border: 2px solid var(--neon-gold);
+            box-shadow: 0 0 16px rgba(255, 184, 0, 0.3);
+        }
+        .zelle-overlay.open .zelle-qr {
+            animation: qrReveal 0.5s ease-out 0.15s both;
+        }
+        @keyframes qrReveal {
+            0%   { filter: brightness(0) saturate(0); }
+            35%  { filter: brightness(2) saturate(2) hue-rotate(30deg); }
+            100% { filter: brightness(1) saturate(1); }
+        }
+        .zelle-qr-wrap::after {
+            content: "";
+            position: absolute;
+            left: 2px; right: 2px;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--neon-cyan) 20%,
+                rgba(255,255,255,0.9) 50%,
+                var(--neon-cyan) 80%,
+                transparent 100%
+            );
+            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(6, 227, 255, 0.4);
+            animation: qrScan 2.4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes qrScan {
+            0%   { top: 2px; opacity: 0; }
+            5%   { opacity: 1; }
+            45%  { top: calc(50% - 1px); opacity: 1; }
+            55%  { top: calc(50% - 1px); opacity: 1; }
+            93%  { opacity: 1; }
+            100% { top: calc(100% - 4px); opacity: 0; }
+        }
+        .zelle-qr-corner {
+            position: absolute;
+            width: 14px; height: 14px;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .zelle-qr-corner.tl { top: -1px; left: -1px; border-top: 2px solid var(--neon-cyan); border-left: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.tr { top: -1px; right: -1px; border-top: 2px solid var(--neon-cyan); border-right: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--neon-cyan); border-left: 2px solid var(--neon-cyan); }
+        .zelle-qr-corner.br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--neon-cyan); border-right: 2px solid var(--neon-cyan); }
+        .zelle-close {
+            background: transparent;
+            border: 1px solid rgba(255, 184, 0, 0.5);
+            color: var(--neon-gold);
+            font-family: var(--font-stack);
+            font-size: 0.88em;
+            letter-spacing: 0.12em;
+            padding: 9px 24px;
+            cursor: crosshair;
+            transition: all 0.18s ease;
+            text-transform: lowercase;
+        }
+        .zelle-close:hover {
+            background: var(--neon-gold);
+            color: #000;
+            box-shadow: 0 0 18px var(--neon-gold);
+            text-shadow: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="boot" id="boot"><pre id="bootlog"></pre></div>
+
+    <div class="zelle-overlay" id="zelleOverlay" role="dialog" aria-modal="true" aria-label="Zelle QR code">
+        <div class="zelle-modal">
+            <div class="zelle-modal-title">&gt;&gt; zelle_</div>
+            <p class="zelle-modal-hint">scan to send greg snack money_</p>
+            <div class="zelle-qr-wrap">
+                <img src="zelle.jpg" alt="Zelle QR code" class="zelle-qr">
+                <span class="zelle-qr-corner tl"></span>
+                <span class="zelle-qr-corner tr"></span>
+                <span class="zelle-qr-corner bl"></span>
+                <span class="zelle-qr-corner br"></span>
+            </div>
+            <button type="button" class="zelle-close" onclick="closeZelleModal()">[ close ]</button>
+        </div>
+    </div>
+
     <div class="particles" id="particles"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
@@ -790,6 +941,7 @@
                     <a href="https://plex.weirdplexbutok.biz/" class="button primary">plex</a>
                     <a href="https://requests.weirdplexbutok.biz" class="button">request</a>
                     <a href="mailto:greg@weirdplexbutok.biz" class="button">contact</a>
+                    <a href="onboarding.html" class="button">setup</a>
                 </div>
 
                 <div class="support-label">::: support greg :::</div>
@@ -797,6 +949,7 @@
                     <a href="https://www.venmo.com/u/Thomas-Connally" class="button support-btn" target="_blank" rel="noopener noreferrer">venmo</a>
                     <a href="https://paypal.me/thomasconnally1111" class="button support-btn" target="_blank" rel="noopener noreferrer">paypal</a>
                     <a href="https://www.amazon.com/hz/wishlist/ls/2ZIX2XZ72O4YZ?ref_=wl_share" class="button support-btn" target="_blank" rel="noopener noreferrer">upgrades</a>
+                    <button type="button" class="button support-btn" onclick="openZelleModal()">zelle</button>
                 </div>
             </section>
 
@@ -1166,6 +1319,26 @@
             document.addEventListener('mouseleave', () => {
                 holo.style.transform = 'perspective(900px) rotateY(0) rotateX(0)';
             });
+        }
+
+        // ── ZELLE MODAL ─────────────────────────────────────────
+        (function zelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) closeZelleModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeZelleModal(); });
+        })();
+        function openZelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeZelleModal() {
+            const overlay = document.getElementById('zelleOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
         }
 
         // konami code → chromatic mode

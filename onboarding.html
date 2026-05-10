@@ -3,67 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~:greg:~ onboarding_</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="description" content="greg — setup guide and FAQ for new users.">
+    <title>~:greg:~ setup &amp; faq_</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #06e3ff;
             --neon-pink: #ff2bd6;
+            --neon-cyan: #06e3ff;
             --neon-green: #5dffb1;
             --neon-yellow: #ffe600;
-            --bg: #0a0512;
-            --font-stack: "Share Tech Mono", monospace;
+            --neon-gold: #ffb800;
+            --light-cyan: #a1ffff;
+            --font-stack: 'Share Tech Mono', 'Lucida Console', monospace;
+            --font-display: 'VT323', monospace;
         }
+        * { box-sizing: border-box; }
         body {
-            background: var(--bg);
-            color: #eee;
+            background: #04020a;
+            color: var(--light-cyan);
             font-family: var(--font-stack);
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+            font-size: 0.95em;
+            line-height: 1.65;
+            margin: 0;
+            padding: 32px 20px 72px;
+            text-transform: lowercase;
         }
-        h1, h2 { color: var(--neon-cyan); text-transform: lowercase; }
-        h1 { border-bottom: 2px solid var(--neon-pink); padding-bottom: 10px; }
-        .back { color: var(--neon-green); text-decoration: none; display: block; margin-bottom: 20px; }
-        .back:hover { text-decoration: underline; }
-        section { margin-bottom: 30px; border: 1px solid rgba(6, 227, 255, 0.2); padding: 20px; background: rgba(255, 255, 255, 0.02); }
-        .q { color: var(--neon-yellow); font-weight: bold; display: block; margin-bottom: 5px; }
-        .a { color: #ccc; }
-        code { background: rgba(255, 255, 255, 0.1); padding: 2px 5px; border-radius: 3px; }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15) 0px,
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            mix-blend-mode: multiply;
+        }
+        .wrap { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+        a { color: var(--neon-pink); text-decoration: none; transition: color 0.2s, text-shadow 0.2s; }
+        a:hover { color: #fff; text-shadow: 0 0 8px var(--neon-pink); }
+
+        .back {
+            display: inline-block;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 6px var(--neon-cyan);
+            margin-bottom: 28px;
+            letter-spacing: 0.06em;
+        }
+        .back:hover { color: #fff; text-shadow: 0 0 10px var(--neon-cyan); }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 2.6em;
+            color: #fff;
+            text-shadow: 0 0 14px var(--neon-pink), 0 0 5px #fff;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.03em;
+            line-height: 1;
+        }
+        .subtitle {
+            color: rgba(161,255,255,0.45);
+            font-size: 0.85em;
+            letter-spacing: 0.1em;
+            margin-bottom: 36px;
+        }
+        h2 {
+            font-family: var(--font-display);
+            font-size: 1.55em;
+            color: var(--neon-cyan);
+            font-weight: normal;
+            margin: 0 0 16px 0;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid rgba(6, 227, 255, 0.22);
+            padding-bottom: 6px;
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+        section {
+            background: rgba(255,255,255,0.018);
+            border: 1px solid rgba(255, 43, 214, 0.22);
+            border-radius: 3px;
+            padding: 22px 24px;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        section::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+            opacity: 0.35;
+        }
+        .qa { margin-bottom: 14px; }
+        .qa:last-child { margin-bottom: 0; }
+        .q {
+            color: var(--neon-yellow);
+            display: block;
+            margin-bottom: 4px;
+            letter-spacing: 0.03em;
+            text-shadow: 0 0 4px rgba(255,230,0,0.4);
+        }
+        .q::before { content: "> "; opacity: 0.6; }
+        .a { color: rgba(161, 255, 255, 0.82); }
+        code {
+            background: rgba(93,255,177,0.1);
+            border: 1px solid rgba(93,255,177,0.25);
+            padding: 1px 6px;
+            border-radius: 2px;
+            color: var(--neon-green);
+            font-size: 0.9em;
+        }
+        .tip {
+            background: rgba(255, 184, 0, 0.055);
+            border-left: 2px solid var(--neon-gold);
+            padding: 10px 14px;
+            margin-top: 12px;
+            color: rgba(255, 200, 80, 0.88);
+            font-size: 0.9em;
+            line-height: 1.55;
+        }
+        .tip::before { content: "// "; opacity: 0.55; }
+        .app-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .app-link {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-shadow: 0 0 4px var(--neon-cyan);
+            padding: 7px 16px;
+            font-family: var(--font-stack);
+            font-size: 0.88em;
+            letter-spacing: 0.06em;
+            transition: all 0.18s ease;
+            display: inline-block;
+        }
+        .app-link:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 16px var(--neon-cyan);
+            text-shadow: none;
+        }
+        @media (max-width: 600px) {
+            body { padding: 20px 14px 60px; }
+            h1 { font-size: 2em; }
+            section { padding: 16px; }
+        }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back">&lt; back to terminal_</a>
-    <h1>&gt; new user onboarding & faq_</h1>
-    
-    <section>
-        <h2>&gt; the basics_</h2>
-        <p>welcome to <strong>greg</strong>. it's a private media ecosystem built on unraid and plex. it's not always stable, but it's always free.</p>
-        <p><span class="q">Q: how do i get access?</span>
-        <span class="a">A: typically by invite. if you have a link to the registration portal (wizarr), use it. otherwise, contact thomas.</span></p>
-    </section>
+    <div class="wrap">
+        <a href="index.html" class="back">&lt; back to terminal_</a>
+        <h1>&gt; setup &amp; faq_</h1>
+        <p class="subtitle">// everything you need to get up and running on greg</p>
 
-    <section>
-        <h2>&gt; streaming_</h2>
-        <p><span class="q">Q: what apps should i use?</span>
-        <span class="a">A: the official <strong>plex</strong> app is available on smart TVs, apple TV, nvidia shield, and mobile. avoid the web browser player if possible; it causes "transcoding" which kills the server.</span></p>
-        <p><span class="q">Q: it's buffering. why?</span>
-        <span class="a">A: 99% of the time, it's your internet or your settings. in the plex app, set <strong>Remote Quality</strong> to "Original" or "Maximum". greg has a big pipe; use it.</span></p>
-    </section>
+        <section>
+            <h2>&gt; step 1: get the plex app_</h2>
+            <div class="qa">
+                <span class="q">where do i download plex?</span>
+                <span class="a">the official plex app is free on every platform. grab it here:</span>
+            </div>
+            <div class="app-links">
+                <a href="https://www.plex.tv/media-server-downloads/#plex-app" class="app-link" target="_blank" rel="noopener noreferrer">all platforms &rarr;</a>
+                <a href="https://apps.apple.com/us/app/plex-watch-live-tv-and-movies/id383457673" class="app-link" target="_blank" rel="noopener noreferrer">ios &amp; apple tv &rarr;</a>
+                <a href="https://play.google.com/store/apps/details?id=com.plexapp.android" class="app-link" target="_blank" rel="noopener noreferrer">android &rarr;</a>
+                <a href="https://www.microsoft.com/en-us/p/plex/9mv0b7b74brq" class="app-link" target="_blank" rel="noopener noreferrer">windows &rarr;</a>
+            </div>
+            <div class="tip">smart tvs (lg, samsung), roku, fire tv, chromecast, and most game consoles also have official plex apps in their app stores. use the native app — the web browser player is garbage and will transcode everything.</div>
+        </section>
 
-    <section>
-        <h2>&gt; requests_</h2>
-        <p><span class="q">Q: how do i ask for new movies/shows?</span>
-        <span class="a">A: use the <strong>request</strong> link on the main page (Overseerr). log in with your plex account, find your show, and hit request. it's automated from there.</span></p>
-    </section>
+        <section>
+            <h2>&gt; step 2: connect to greg_</h2>
+            <div class="qa">
+                <span class="q">how do i find greg inside plex?</span>
+                <span class="a">you need an invite. if you have a wizarr invite link, use it — it creates your plex account (if needed) and accepts the server share in one shot. greg will then appear automatically in your plex app under your home libraries or under "more &gt; other servers."</span>
+            </div>
+            <div class="qa">
+                <span class="q">i don't have an invite link.</span>
+                <span class="a">email <a href="mailto:greg@weirdplexbutok.biz">greg@weirdplexbutok.biz</a> or hit up thomas directly.</span>
+            </div>
+        </section>
 
-    <section>
-        <h2>&gt; support_</h2>
-        <p><span class="q">Q: how can i help?</span>
-        <span class="a">A: running 140TB of disks and a modern CPU isn't cheap on the electric bill. if you use greg daily, consider hitting the venmo/paypal links to keep the lights on and the disks spinning.</span></p>
-        <p><span class="q">Q: something is broken.</span>
-        <span class="a">A: email <code>greg@weirdplexbutok.biz</code>. i check it eventually.</span></p>
-    </section>
+        <section>
+            <h2>&gt; step 3: fix your quality settings_</h2>
+            <div class="qa">
+                <span class="q">it's buffering. why?</span>
+                <span class="a">plex defaults to low quality to protect servers from transcoding load. greg has the bandwidth — you just need to tell it to use it.</span>
+            </div>
+            <div class="tip">in the plex app: settings &rarr; quality &rarr; remote streaming &rarr; set to <code>original</code> or <code>maximum</code>. do the same for local streaming. this sends the raw file instead of a re-encoded stream.</div>
+            <div class="qa" style="margin-top: 14px;">
+                <span class="q">should i enable hardware-accelerated decoding?</span>
+                <span class="a">yes. always. settings &rarr; advanced &rarr; enable hardware-accelerated video decoding. offloads decode to your gpu, kills battery drain on mobile, and handles 4k hdr without dropping frames.</span>
+            </div>
+            <div class="qa">
+                <span class="q">still buffering after all that.</span>
+                <span class="a">check your internet. 4k hdr needs roughly 50–120 mbps. if you're on wi-fi, try 5ghz or move closer to your router. if you're on a vpn, turn it off — most vpns choke media streams.</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>&gt; requesting content_</h2>
+            <div class="qa">
+                <span class="q">how do i ask for new movies or shows?</span>
+                <span class="a">use the <a href="https://requests.weirdplexbutok.biz" target="_blank" rel="noopener noreferrer">request portal &rarr;</a> (overseerr). log in with your plex account, search, and hit request. fully automated — most things show up within a few hours.</span>
+            </div>
+            <div class="qa">
+                <span class="q">my request has been pending forever.</span>
+                <span class="a">availability varies by indexer. if it's been 48+ hours and it's a mainstream title that's actually out on home media, shoot an email to greg.</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>&gt; jellyfin_</h2>
+            <div class="qa">
+                <span class="q">what's jellyfin?</span>
+                <span class="a">greg also runs <a href="https://jellyfin.org" target="_blank" rel="noopener noreferrer">jellyfin &rarr;</a> — open-source, no feature gates, no plex pass required. same library. if you want access, ask thomas. it's a separate account from plex.</span>
+            </div>
+            <div class="qa">
+                <span class="q">which should i use?</span>
+                <span class="a">plex for most people — better app ecosystem. jellyfin if you hate plex's upsell screens, want true offline downloads without a plex pass, or are running a custom client like <a href="https://github.com/nicehash/infuse" target="_blank" rel="noopener noreferrer">infuse</a>.</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>&gt; support &amp; contact_</h2>
+            <div class="qa">
+                <span class="q">how can i help keep this running?</span>
+                <span class="a">140tb of spinning disks plus a modern cpu isn't cheap on the electric bill. if you use greg daily, tossing a few bucks goes directly toward hardware and electricity. venmo, paypal, and zelle (qr on the main page) all work.</span>
+            </div>
+            <div class="qa">
+                <span class="q">something is broken.</span>
+                <span class="a">email <a href="mailto:greg@weirdplexbutok.biz">greg@weirdplexbutok.biz</a>. thomas checks it eventually.</span>
+            </div>
+        </section>
+    </div>
 </body>
 </html>

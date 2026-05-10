@@ -1,12 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <g transform="rotate(-45, 16, 16)">
-    <rect x="1" y="10" width="30" height="12" fill="#2b45ff"/>
-    <rect x="1" y="10" width="30" height="12" fill="none" stroke="#ffe600" stroke-width="1.5" stroke-dasharray="2,1.5"/>
-    <circle cx="1" cy="16" r="3" fill="#04020a"/>
-    <circle cx="31" cy="16" r="3" fill="#04020a"/>
-    <text x="16" y="20" text-anchor="middle"
+  <defs>
+    <filter id="neon" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g transform="rotate(-22, 16, 16)">
+    <!-- cyan outer glow -->
+    <rect x="2" y="10" width="28" height="12" fill="none"
+          stroke="#06e3ff" stroke-width="2.5" opacity="0.3" rx="1"
+          filter="url(#neon)"/>
+    <!-- ticket body -->
+    <rect x="2" y="10" width="28" height="12" fill="#1530dd" rx="1"/>
+    <!-- pink shimmer strip -->
+    <rect x="2" y="10" width="28" height="3" fill="#ff2bd6" opacity="0.18" rx="1"/>
+    <!-- dashed yellow border -->
+    <rect x="2" y="10" width="28" height="12" fill="none"
+          stroke="#ffe600" stroke-width="1.2" stroke-dasharray="2,1.5" rx="1"/>
+    <!-- notches -->
+    <circle cx="2" cy="16" r="3" fill="#04020a"/>
+    <circle cx="30" cy="16" r="3" fill="#04020a"/>
+    <!-- GREG text with neon glow -->
+    <text x="16" y="16" text-anchor="middle"
           font-family="'Courier New', monospace"
           font-size="7.5" font-weight="bold"
-          fill="#ffe600" letter-spacing="1">GREG</text>
+          fill="#ffe600" letter-spacing="1"
+          filter="url(#neon)" dominant-baseline="middle">GREG</text>
+    <!-- cyan accent line bottom -->
+    <line x1="5" y1="21.2" x2="27" y2="21.2"
+          stroke="#06e3ff" stroke-width="0.6" opacity="0.7"
+          filter="url(#glow-soft)"/>
   </g>
 </svg>

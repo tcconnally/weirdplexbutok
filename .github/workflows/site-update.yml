@@ -1,0 +1,109 @@
+name: Site Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Update title"
+        required: true
+        type: string
+      body:
+        description: "Full update body"
+        required: true
+        type: string
+      date:
+        description: "Optional display date, e.g. may 11, 2026"
+        required: false
+        type: string
+  repository_dispatch:
+    types:
+      - site_update_email
+
+permissions:
+  contents: write
+
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update announcement
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TITLE: ${{ inputs.title }}
+          INPUT_BODY: ${{ inputs.body }}
+          INPUT_DATE: ${{ inputs.date }}
+          PAYLOAD_TITLE: ${{ github.event.client_payload.title }}
+          PAYLOAD_BODY: ${{ github.event.client_payload.body }}
+          PAYLOAD_DATE: ${{ github.event.client_payload.date }}
+        run: |
+          python - <<'PY'
+          import html
+          import os
+          import re
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          def env(name):
+              return (os.environ.get(name) or '').strip()
+
+          title = env('INPUT_TITLE') or env('PAYLOAD_TITLE')
+          body = env('INPUT_BODY') or env('PAYLOAD_BODY')
+          display_date = env('INPUT_DATE') or env('PAYLOAD_DATE')
+
+          if not title:
+              raise SystemExit('missing update title')
+          if not body:
+              raise SystemExit('missing update body')
+          if not display_date:
+              now = datetime.now(ZoneInfo('America/Chicago'))
+              display_date = now.strftime('%b %d, %Y').lower()
+
+          body_html = '<br>'.join(html.escape(line) for line in body.splitlines() if line.strip())
+          if not body_html:
+              raise SystemExit('empty update body after trimming')
+
+          block = (
+              '                    <!-- site-update:start -->\n'
+              f'                    <p class="email-update"><strong>&gt; {html.escape(display_date)}: {html.escape(title)}.</strong> {body_html}</p>\n'
+              '                    <!-- site-update:end -->'
+          )
+
+          path = 'index.html'
+          with open(path, 'r', encoding='utf-8') as f:
+              text = f.read()
+
+          marker_re = re.compile(r'                    <!-- site-update:start -->.*?                    <!-- site-update:end -->', re.S)
+          if marker_re.search(text):
+              text = marker_re.sub(block, text, count=1)
+          else:
+              text = text.replace('                <div class="timeline">\n', '                <div class="timeline">\n' + block + '\n', 1)
+
+          if '.timeline .email-update' not in text:
+              css = '''
+        .timeline .email-update {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 6px rgba(255, 230, 0, 0.45);
+        }
+        .timeline .email-update strong {
+            color: #fff7a6;
+        }
+'''
+              text = text.replace('        .timeline p:hover { opacity: 1; }\n', css + '        .timeline p:hover { opacity: 1; }\n', 1)
+
+          with open(path, 'w', encoding='utf-8', newline='') as f:
+              f.write(text)
+          PY
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No site update changes."
+            exit 0
+          fi
+          git config user.name "site-update-bot"
+          git config user.email "site-update-bot@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update site announcement"
+          git push

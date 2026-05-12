@@ -930,7 +930,7 @@
             </div>
             <span class="status">
                 <span class="status-dot"></span>
-                <span>greg.online</span>
+                <span>greg.status unknown</span>
             </span>
         </header>
 
@@ -1084,34 +1084,13 @@
             }
         })();
 
-        // ── LIVE STATUS (graceful fallback to faux) ─────────
-        // Polls /status.json. If available, drives sysmsg + status dot + now-watching.
-        // If 404/error, falls back to cycling pre-baked faux messages so the page still feels alive.
-        const gregStatus = { data: null, lastOk: 0 };
-        // Two pools: SYSTEM (left stack) + MEDIA (right stack). No string lives in both.
-        const FAUX_SYS = [
-            '[kernel] :: 6.6.55 stable', '[parity] :: in sync', '[fans] :: nominal',
-            '[temp] :: nominal', '[ram] :: healthy', '[gpu] :: idle', '[qsv] :: idle',
-            '[disk] :: smart green', '[btrfs] :: scrub clean',
-            '[net] :: 2.5 GbE link up', '[bond0] :: tx ok', '[cron] :: greg-purgr armed',
-            '[backup] :: zerobyte ok', '[scan] :: 0 anomalies',
-            '[dockd] :: containers stable', '[unraid] :: array online',
-            '[load] :: nominal', '[swap] :: 0 used', '[clock] :: ntp synced',
-            '[greg] :: vibing', '[greg] :: holding'
-        ];
-        const FAUX_MEDIA = [
-            '[plex] :: heartbeat', '[plex] :: idle', '[jellyfin] :: standby',
-            '[transcoder] :: queue clear', '[sonarr] :: rss fetched',
-            '[sonarr] :: queue clear', '[radarr] :: queue clear',
-            '[radarr] :: rss fetched', '[bazarr] :: subs synced',
-            '[prowlarr] :: indexers green', '[seerr] :: ready',
-            '[wizarr] :: invites idle', '[homepage] :: serving',
-            '[tautulli] :: tracking', '[ntfy] :: 0 pending',
-            '[kometa] :: collections fresh', '[maintainerr] :: rules ok',
-            '[uk] :: monitors green', '[recyclarr] :: synced',
-            '[cleanuparr] :: queue clear', '[plex] :: streaming',
-            '[greg-purgr] :: armed', '[uploads] :: idle'
-        ];
+        // ── LIVE STATUS (truthful only; no simulated health) ─
+        // Polls status.weirdplexbutok.biz/status.json. Dynamic availability,
+        // metrics, and ticker text are shown only when a recent status payload
+        // says so. If the endpoint is unreachable or stale, the page says
+        // unknown/stale instead of pretending everything is healthy.
+        const STATUS_MAX_AGE_MS = 120000;
+        const gregStatus = { data: null, lastOk: 0, lastError: null };
 
         function buildSysMsgs(d) {
             const m = [];
@@ -1149,50 +1128,89 @@
                 if (!r.ok) throw new Error('no status');
                 gregStatus.data = await r.json();
                 gregStatus.lastOk = Date.now();
+                gregStatus.lastError = null;
                 applyStatus();
             } catch (e) {
-                // graceful fall-through to faux mode
+                gregStatus.lastError = e && e.message ? e.message : 'status fetch failed';
                 if (Date.now() - gregStatus.lastOk > 30000) {
                     gregStatus.data = null;
-                    applyStatus();
                 }
+                applyStatus();
             }
         }
 
-        function applyStatus() {
+        function statusAgeMs(d) {
+            if (!d || typeof d.ts !== 'number') return Infinity;
+            const tsMs = d.ts < 20000000000 ? d.ts * 1000 : d.ts;
+            return Date.now() - tsMs;
+        }
+
+        function isStatusFresh(d) {
+            const age = statusAgeMs(d);
+            return Number.isFinite(age) && age >= 0 && age <= STATUS_MAX_AGE_MS;
+        }
+
+        function statusMode() {
+            const d = gregStatus.data;
+            if (!d) return 'unknown';
+            if (!isStatusFresh(d)) return 'stale';
+            return d.online === false ? 'offline' : 'online';
+        }
+
+        function setHeaderStatus(mode) {
             const dot = document.querySelector('.status-dot');
             const label = document.querySelector('.status span:last-child');
+            const colors = {
+                online: 'var(--neon-green)',
+                offline: 'var(--neon-pink)',
+                stale: 'var(--neon-yellow)',
+                unknown: 'var(--neon-yellow)'
+            };
+            const color = colors[mode] || colors.unknown;
+            if (dot) {
+                dot.style.background = color;
+                dot.style.boxShadow = `0 0 8px ${color}, 0 0 24px ${color}`;
+            }
+            if (label) label.textContent = `greg.${mode}`;
+        }
+
+        function clearLiveOps() {
+            setOp('opStreams', null, '', null);
+            setOp('opCpu', null, '', null);
+            setOp('opArray', null, '', null);
+            setOp('opUptime', null, '', null);
+        }
+
+        function applyStatus() {
             const nw = document.getElementById('nowWatching');
             const nwT = document.getElementById('nwTitles');
             const d = gregStatus.data;
+            const mode = statusMode();
+            const fresh = mode === 'online' || mode === 'offline';
 
-            if (d && d.online === false) {
-                if (dot) dot.style.background = 'var(--neon-pink)';
-                if (dot) dot.style.boxShadow = '0 0 8px var(--neon-pink), 0 0 24px var(--neon-pink)';
-                if (label) label.textContent = 'greg.offline';
-            } else {
-                if (dot) dot.style.background = 'var(--neon-green)';
-                if (dot) dot.style.boxShadow = '';
-                if (label) label.textContent = 'greg.online';
-            }
+            setHeaderStatus(mode);
 
-            if (d && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
+            if (fresh && d.plex && Array.isArray(d.plex.now_watching) && d.plex.now_watching.length > 0) {
                 nwT.innerHTML = d.plex.now_watching.map(t => `<span>&middot; ${escapeHtml(t)}</span>`).join('');
                 nw.classList.remove('silent');
                 nw.classList.add('live');
-            } else if (d) {
-                nwT.innerHTML = '<span>[silence]</span>';
+            } else if (fresh) {
+                nwT.innerHTML = '<span>[verified silence]</span>';
+                nw.classList.remove('live');
+                nw.classList.add('silent');
+            } else if (nw && nwT) {
+                nwT.innerHTML = '<span>[no recent verified status]</span>';
                 nw.classList.remove('live');
                 nw.classList.add('silent');
             }
-            // else: leave hidden (no real data yet)
 
-            // live-ops tiles
-            if (d) {
+            if (fresh) {
                 setOp('opStreams', d.plex && d.plex.active_sessions != null ? d.plex.active_sessions : null, '', v => v >= 8 ? 'warn' : null);
                 setOp('opCpu', d.cpu_percent != null ? Math.round(d.cpu_percent) : null, '%', v => v >= 85 ? 'alert' : (v >= 65 ? 'warn' : null));
                 setOp('opArray', d.disk_array && d.disk_array.free_tb != null ? d.disk_array.free_tb.toFixed(1) : null, 'tb', v => v < 5 ? 'alert' : (v < 15 ? 'warn' : null));
                 setOp('opUptime', d.uptime_seconds != null ? formatUptime(d.uptime_seconds) : null, '', null);
+            } else {
+                clearLiveOps();
             }
         }
 
@@ -1232,11 +1250,26 @@
             const COUNT = 24;
 
             function buildPool() {
-                const sys  = gregStatus.data ? buildSysMsgs(gregStatus.data) : [];
-                const med  = gregStatus.data ? buildMediaMsgs(gregStatus.data) : [];
-                const live = sys.concat(med);
-                const faux = FAUX_SYS.concat(FAUX_MEDIA);
-                return live.length >= 3 ? live.concat(faux) : faux.concat(live);
+                const mode = statusMode();
+                const d = gregStatus.data;
+                if (mode === 'online' || mode === 'offline') {
+                    const live = buildSysMsgs(d).concat(buildMediaMsgs(d));
+                    if (live.length) return live;
+                    return [`[greg] :: ${mode}; no detailed metrics reported`];
+                }
+                if (mode === 'stale') {
+                    const age = Math.max(0, Math.round(statusAgeMs(d) / 1000));
+                    return [
+                        `[status] :: telemetry stale (${age}s old)`,
+                        '[status] :: no current health assertion',
+                        '[greg] :: last verified state expired'
+                    ];
+                }
+                return [
+                    '[status] :: waiting for live telemetry',
+                    '[status] :: no current health assertion',
+                    '[greg] :: availability unknown'
+                ];
             }
 
             function fill() {

@@ -1213,6 +1213,7 @@
             } else {
                 clearLiveOps();
             }
+            if (window.updateTicker) window.updateTicker();
         }
 
         function formatUptime(s) {
@@ -1273,7 +1274,7 @@
                 ];
             }
 
-            function fill() {
+            window.updateTicker = function fill() {
                 const pool = buildPool();
                 const used = new Set();
                 const items = [];

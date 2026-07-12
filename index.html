@@ -1213,7 +1213,7 @@
             } else {
                 clearLiveOps();
             }
-            
+            if (window.updateTicker) window.updateTicker();
         }
 
         function formatUptime(s) {
